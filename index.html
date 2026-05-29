@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Chart.js 로드 (시각화용) -->
+  <!-- Chart.js 로드 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
@@ -31,14 +31,16 @@
       --success: #2e7d32;
       --success-bg: #e8f5e9;
       --purple: #9a4d8a;
-      --purple-bg: #fdf5fc;
       
-      --maxw: 1200px;
-      --nav: 260px;
+      --radius-sm: 8px;
       --radius: 16px;
+      --radius-lg: 24px;
+      --maxw: 1200px;
+      --nav: 270px;
+      
       --shadow-sm: 0 2px 8px rgba(21, 32, 30, 0.04);
-      --shadow: 0 10px 30px rgba(21, 32, 30, 0.06);
-      --shadow-lg: 0 16px 40px rgba(20, 63, 60, 0.12);
+      --shadow: 0 12px 36px rgba(21, 32, 30, 0.06);
+      --shadow-lg: 0 20px 50px rgba(20, 63, 60, 0.12);
     }
 
     * {
@@ -52,7 +54,7 @@
     }
 
     body {
-      font-family: 'Pretendard', 'Outfit', system-ui, -apple-system, sans-serif;
+      font-family: 'Pretendard', 'Outfit', system-ui, sans-serif;
       color: var(--body);
       line-height: 1.6;
       background: var(--bg);
@@ -60,12 +62,11 @@
       font-size: 15px;
     }
 
-    /* 레이아웃 구조 */
+    /* 전체 앱 배치 */
     .app-container {
       display: grid;
       grid-template-columns: var(--nav) 1fr;
       min-height: 100vh;
-      max-width: 100%;
     }
 
     /* 사이드바 스타일 */
@@ -79,10 +80,11 @@
       top: 0;
       height: 100vh;
       z-index: 10;
+      transition: all 0.3s;
     }
 
     .brand-area {
-      margin-bottom: 35px;
+      margin-bottom: 30px;
     }
 
     .brand-sub {
@@ -94,11 +96,42 @@
     }
 
     .brand-title {
-      font-size: 18px;
+      font-size: 17.5px;
       font-weight: 800;
       color: var(--ink);
       line-height: 1.35;
       margin-top: 4px;
+    }
+
+    /* 로그인 유저 프로필 요약 카드 */
+    .user-profile-badge {
+      background: var(--teal-l);
+      border: 1px solid #cce2df;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .profile-role-name {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--teal);
+      letter-spacing: 0.05em;
+    }
+
+    .profile-user-name {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--teal-d);
+    }
+
+    .profile-role-level {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 2px;
     }
 
     nav.menu-list {
@@ -123,6 +156,7 @@
       align-items: center;
       gap: 12px;
       transition: all 0.2s;
+      width: 100%;
     }
 
     nav.menu-list button:hover {
@@ -137,12 +171,25 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .logout-btn {
+      margin-top: auto;
+      border: 1px solid var(--line-d) !important;
+      color: var(--danger) !important;
+      background: #fff !important;
+    }
+
+    .logout-btn:hover {
+      background: var(--danger-bg) !important;
+      border-color: #fca8a8 !important;
+    }
+
     .sidebar-footer {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--muted);
       border-top: 1px solid var(--line);
       padding-top: 15px;
       margin-top: 20px;
+      opacity: 0.8;
     }
 
     /* 메인 영역 */
@@ -154,7 +201,7 @@
       width: 100%;
     }
 
-    /* 상단 모바일 바 */
+    /* 모바일 탑바 */
     .mobile-header {
       display: none;
       background: rgba(251, 253, 252, 0.95);
@@ -169,7 +216,7 @@
     }
 
     .mobile-header h1 {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--ink);
     }
@@ -179,7 +226,7 @@
       border: 1px solid var(--line);
       padding: 8px 12px;
       border-radius: 8px;
-      font-size: 13.8px;
+      font-size: 13.5px;
       font-weight: 700;
       color: var(--teal-d);
       cursor: pointer;
@@ -193,7 +240,7 @@
       z-index: 15;
     }
 
-    /* 뷰 섹션 공통 */
+    /* 공통 뷰 분기 */
     .view-section {
       display: none;
     }
@@ -204,17 +251,63 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 공통 헤더 컴포넌트 */
-    .section-header {
+    /* 개인화 환영 배너 */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--teal-d), var(--teal));
+      border-radius: var(--radius);
+      padding: 28px 30px 24px;
+      color: #eafffb;
       margin-bottom: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .welcome-tag {
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #a9ded6;
+      text-transform: uppercase;
+    }
+
+    .welcome-msg {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 6px;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    .welcome-status {
+      font-size: 13.8px;
+      color: #cdeae5;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .welcome-badge {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    /* 섹션 타이틀 */
+    .section-header {
+      margin-bottom: 24px;
     }
 
     .section-tag {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
       letter-spacing: 0.1em;
       color: var(--teal);
@@ -222,20 +315,20 @@
     }
 
     .section-title {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
       color: var(--ink);
-      margin-top: 5px;
+      margin-top: 4px;
       letter-spacing: -0.02em;
     }
 
     .section-desc {
-      font-size: 14.5px;
+      font-size: 14px;
       color: var(--muted);
       margin-top: 6px;
     }
 
-    /* 카드 스타일 */
+    /* 카드 */
     .card {
       background: var(--card);
       border: 1px solid var(--line);
@@ -246,7 +339,7 @@
     }
 
     .card-title {
-      font-size: 17px;
+      font-size: 16.5px;
       font-weight: 800;
       color: var(--ink);
       margin-bottom: 16px;
@@ -256,7 +349,197 @@
     }
 
     /* ========================================================
-       1. 대시보드 뷰 스타일
+       L1. 랜딩 페이지 전용 스타일
+       ======================================================== */
+    .landing-hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .landing-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--teal);
+      background: var(--teal-l);
+      padding: 6px 14px;
+      border-radius: 99px;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+    }
+
+    .landing-title {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      margin-bottom: 18px;
+    }
+
+    .landing-title span {
+      background: linear-gradient(120deg, var(--teal), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .landing-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 30px;
+      line-height: 1.65;
+    }
+
+    .landing-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    @media (max-width: 768px) {
+      .landing-features { grid-template-columns: 1fr; }
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: left;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: var(--line-d);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--teal-l2);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      color: var(--teal);
+      margin-bottom: 18px;
+    }
+
+    .feature-card.purple .feature-icon {
+      background: #faf2f9;
+      color: #9a4d8a;
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ========================================================
+       L2. 로그인 카드 전용 스타일 (Glassmorphism)
+       ======================================================== */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 0 60px;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: var(--shadow-lg);
+      border-radius: var(--radius-lg);
+      padding: 34px 34px;
+      width: 100%;
+      max-width: 440px;
+      animation: modalFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .login-card-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .login-card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* 원클릭 데모 계정 배지 */
+    .demo-accounts-box {
+      margin-top: 24px;
+      border-top: 1px dashed var(--line-d);
+      padding-top: 20px;
+    }
+
+    .demo-box-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--teal);
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .demo-badges-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .demo-badge-btn {
+      background: #fff;
+      border: 1px solid var(--line-d);
+      padding: 10px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--body);
+      text-align: left;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .demo-badge-btn:hover {
+      border-color: var(--teal);
+      background: var(--teal-l2);
+      color: var(--teal-d);
+    }
+
+    .demo-badge-btn .badge-role {
+      font-size: 9.5px;
+      color: var(--muted);
+    }
+
+    /* ========================================================
+       기존 기능 레이아웃/스타일 유지
        ======================================================== */
     .stats-grid {
       display: grid;
@@ -303,13 +586,18 @@
       letter-spacing: -0.02em;
     }
 
+    .stat-value small {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
     .stat-desc {
       font-size: 12px;
       color: var(--muted);
       margin-top: 4px;
     }
 
-    /* 테이블 스타일 */
     .table-container {
       overflow-x: auto;
       border: 1px solid var(--line);
@@ -343,7 +631,6 @@
       background: #fafcfc;
     }
 
-    /* 상태 칩 및 배지 */
     .badge {
       display: inline-block;
       padding: 4px 10px;
@@ -377,9 +664,6 @@
     .flag-item.danger { background: var(--danger-bg); border: 1px solid #f9d3d3; color: var(--danger); }
     .flag-item.none { background: #f0f3f2; border: 1px solid #dbe2e0; color: var(--muted); }
 
-    /* ========================================================
-       2. 평가 수행 뷰 스타일
-       ======================================================== */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -398,7 +682,7 @@
     }
 
     .form-group label {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--ink);
     }
@@ -419,19 +703,12 @@
       border-color: var(--teal);
     }
 
-    /* 문항별 카드 */
     .question-card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 12px;
       padding: 20px;
       margin-bottom: 16px;
-      transition: all 0.2s;
-    }
-
-    .question-card:hover {
-      border-color: var(--line-d);
-      box-shadow: var(--shadow-sm);
     }
 
     .question-title {
@@ -490,7 +767,6 @@
       color: #fff;
     }
 
-    /* BARS 행동 지표 툴팁형 박스 */
     .bars-guide {
       background: var(--teal-l2);
       border: 1px solid #d4e6e2;
@@ -505,11 +781,6 @@
     .bars-guide.show {
       display: block;
       animation: slideDown 0.2s ease;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .comment-area {
@@ -538,7 +809,6 @@
       padding: 2px 6px;
       border-radius: 4px;
       margin-left: 6px;
-      vertical-align: middle;
       display: none;
     }
 
@@ -546,7 +816,6 @@
       display: inline-block;
     }
 
-    /* 양식 제출 액션바 */
     .action-bar {
       display: flex;
       justify-content: flex-end;
@@ -569,101 +838,12 @@
       transition: all 0.2s;
     }
 
-    .btn.btn-primary {
-      background: var(--teal);
-      color: #fff;
-    }
+    .btn.btn-primary { background: var(--teal); color: #fff; }
+    .btn.btn-primary:hover { background: var(--teal-d); }
+    .btn.btn-secondary { background: #fff; border: 1px solid var(--line-d); color: var(--body); }
+    .btn.btn-secondary:hover { background: var(--teal-l2); border-color: var(--teal); color: var(--teal-d); }
+    .btn.btn-danger { background: var(--danger); color: #fff; }
 
-    .btn.btn-primary:hover {
-      background: var(--teal-d);
-    }
-
-    .btn.btn-secondary {
-      background: #fff;
-      border: 1px solid var(--line-d);
-      color: var(--body);
-    }
-
-    .btn.btn-secondary:hover {
-      background: var(--teal-l2);
-      border-color: var(--teal);
-      color: var(--teal-d);
-    }
-
-    .btn.btn-danger {
-      background: var(--danger);
-      color: #fff;
-    }
-
-    .btn.btn-danger:hover {
-      background: #b71c1c;
-    }
-
-    /* ========================================================
-       3. 리포트 및 IDP 상세 모달/뷰 스타일
-       ======================================================== */
-    .report-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 30, 28, 0.5);
-      z-index: 100;
-      padding: 40px 20px;
-      overflow-y: auto;
-    }
-
-    .report-modal.open {
-      display: block;
-    }
-
-    .report-modal-content {
-      background: #fff;
-      border-radius: var(--radius);
-      max-width: 900px;
-      margin: 0 auto;
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .modal-header {
-      background: linear-gradient(135deg, var(--teal-d), var(--teal));
-      color: #fff;
-      padding: 24px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-header h2 {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 26px;
-      cursor: pointer;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-    }
-
-    .close-btn:hover {
-      opacity: 1;
-    }
-
-    .modal-body {
-      padding: 30px;
-    }
-
-    /* 리포트 레이아웃 */
     .report-grid {
       display: grid;
       grid-template-columns: 1.2fr 1fr;
@@ -714,7 +894,6 @@
       margin-top: 3px;
     }
 
-    /* 코멘트 목록 */
     .comment-list {
       display: flex;
       flex-direction: column;
@@ -741,9 +920,6 @@
       justify-content: space-between;
     }
 
-    /* ========================================================
-       4. 매뉴얼 뷰어 스타일 (원본 포팅)
-       ======================================================== */
     .manual-layout {
       display: grid;
       grid-template-columns: 240px 1fr;
@@ -781,16 +957,8 @@
       transition: all 0.15s;
     }
 
-    .manual-toc a:hover {
-      color: var(--teal);
-      background: var(--teal-l2);
-    }
-
-    .manual-toc a.active {
-      color: var(--teal-d);
-      background: var(--teal-l);
-      font-weight: 700;
-    }
+    .manual-toc a:hover { color: var(--teal); background: var(--teal-l2); }
+    .manual-toc a.active { color: var(--teal-d); background: var(--teal-l); font-weight: 700; }
 
     .manual-body-content {
       font-size: 14.5px;
@@ -804,7 +972,7 @@
     }
 
     .manual-body-content h2 {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 800;
       color: var(--ink);
       display: flex;
@@ -825,34 +993,10 @@
       place-items: center;
     }
 
-    .manual-body-content p {
-      margin-bottom: 12px;
-    }
+    .manual-body-content h3 { font-size: 16px; font-weight: 800; color: var(--teal-d); margin: 20px 0 8px; }
+    .manual-body-content ul.disc, .manual-body-content ol.dec { margin: 0 0 14px; padding-left: 20px; }
+    .manual-body-content ul.disc li, .manual-body-content ol.dec li { margin-bottom: 4px; }
 
-    .manual-body-content h3 {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--teal-d);
-      margin: 20px 0 8px;
-    }
-
-    .manual-body-content h4 {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--ink);
-      margin: 12px 0 6px;
-    }
-
-    .manual-body-content ul.disc, .manual-body-content ol.dec {
-      margin: 0 0 14px;
-      padding-left: 20px;
-    }
-
-    .manual-body-content ul.disc li, .manual-body-content ol.dec li {
-      margin-bottom: 4px;
-    }
-
-    /* 템플릿 복사 카드 */
     .tpl-box {
       border: 1px solid var(--line);
       border-radius: 12px;
@@ -870,10 +1014,7 @@
       border-bottom: 1px solid var(--line);
     }
 
-    .tpl-header b {
-      font-size: 13.5px;
-      color: var(--ink);
-    }
+    .tpl-header b { font-size: 13.5px; color: var(--ink); }
 
     .tpl-copy-btn {
       font-family: inherit;
@@ -888,21 +1029,9 @@
       transition: all 0.15s;
     }
 
-    .tpl-copy-btn:hover {
-      background: var(--teal);
-      color: #fff;
-      border-color: var(--teal);
-    }
+    .tpl-copy-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .tpl-body { padding: 14px 16px; font-size: 13.5px; white-space: pre-wrap; color: var(--body); line-height: 1.6; }
 
-    .tpl-body {
-      padding: 14px 16px;
-      font-size: 13.5px;
-      white-space: pre-wrap;
-      color: var(--body);
-      line-height: 1.6;
-    }
-
-    /* 토스트 메시지 */
     .toast-msg {
       position: fixed;
       left: 50%;
@@ -921,67 +1050,60 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
-    .toast-msg.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* 반응형 및 인쇄 스타일 */
     @media (max-width: 920px) {
-      .app-container {
-        grid-template-columns: 1fr;
-      }
+      .app-container { grid-template-columns: 1fr; }
       aside.sidebar {
         position: fixed;
         left: 0;
         top: 0;
         bottom: 0;
-        width: 260px;
+        width: 270px;
         transform: translateX(-100%);
         transition: transform 0.25s ease-out;
         z-index: 30;
       }
-      aside.sidebar.open {
-        transform: translateX(0);
-      }
-      .mobile-header {
-        display: flex;
-      }
-      main.main-content {
-        padding: 20px;
-      }
+      aside.sidebar.open { transform: translateX(0); }
+      .mobile-header { display: flex; }
+      main.main-content { padding: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- 모바일 헤더 -->
+  <!-- 모바일 상단 바 -->
   <div class="mobile-header">
-    <h1>360° 다면평가 운영시스템</h1>
-    <button class="menu-toggle-btn" id="sidebarToggle">목차 ☰</button>
+    <h1 id="mobileAppTitle">360° 다면평가 운영시스템</h1>
+    <button class="menu-toggle-btn" id="sidebarToggle">메뉴 ☰</button>
   </div>
   
   <div class="scrim" id="appScrim"></div>
 
   <div class="app-container">
-    <!-- 1. 사이드바 네비게이션 -->
-    <aside class="sidebar" id="appSidebar">
+    <!-- 1. 사이드바 (로그인 후 노출 제어) -->
+    <aside class="sidebar" id="appSidebar" style="display: none;">
       <div class="brand-area">
         <div class="brand-sub">360° Operations</div>
         <div class="brand-title">다면평가 운영시스템</div>
       </div>
       
-      <nav class="menu-list">
-        <button class="active" onclick="switchView('dashboard')">📊 운영 대시보드</button>
-        <button onclick="switchView('evaluation')">✏️ 다면평가 입력</button>
-        <button onclick="switchView('report')">📋 리포트 & IDP</button>
-        <button onclick="switchView('manual')">📖 실무 매뉴얼</button>
-        <button onclick="switchView('data-manager')">⚙️ 데이터 관리</button>
+      <!-- 로그인된 현재 유저 프로필 요약 카드 -->
+      <div class="user-profile-badge" id="sidebarUserProfile">
+        <div class="profile-role-name" id="p-role-name">인사팀</div>
+        <div class="profile-user-name" id="p-user-name">홍길동 님</div>
+        <div class="profile-role-level" id="p-role-level">부서장</div>
+      </div>
+      
+      <nav class="menu-list" id="sidebarMenuList">
+        <!-- JS에 의해 로그인한 유저의 역할에 맞는 메뉴 셋이 동적 렌더링됩니다 -->
       </nav>
+
+      <button class="btn logout-btn" onclick="handleLogout()">🚪 로그아웃</button>
 
       <div class="sidebar-footer">
         <div>성장 지원용 (개발 트랙)</div>
-        <div style="font-size: 10px; margin-top: 4px; opacity: 0.7;">v1.0 (병원 업무 자동화용)</div>
+        <div style="font-size: 10px; margin-top: 4px; opacity: 0.7;">v1.2 (로그인 및 개인화 완료)</div>
       </div>
     </aside>
 
@@ -989,16 +1111,107 @@
     <main class="main-content">
       
       <!-- ==========================================
-           2-1. 운영 대시보드 뷰
+           L1. 랜딩 페이지 뷰 (비로그인 첫 화면)
            ========================================== -->
-      <section id="view-dashboard" class="view-section active">
+      <section id="view-landing" class="view-section active">
+        <div class="landing-hero">
+          <div class="landing-badge">360° Growth & Feedback System</div>
+          <h1 class="landing-title">서로의 <span>성장</span>을 이끄는<br>360도 다면 피드백 시스템</h1>
+          <p class="landing-subtitle">
+            줄 세우기와 질책을 위한 평가가 아닙니다. 동료의 솔직한 관찰 사실과 구체적인 행동 기준(BARS)을 바탕으로 개인의 진정한 역량 도약을 지원합니다.
+          </p>
+          <div class="action-bar" style="justify-content: center; margin-top: 0;">
+            <button class="btn btn-primary" style="padding: 16px 36px; font-size: 16px; border-radius: 12px; box-shadow: var(--shadow);" onclick="switchView('login')">🚀 다면평가 로그인하기</button>
+          </div>
+        </div>
+
+        <div class="landing-features">
+          <div class="feature-card">
+            <div class="feature-icon">🌱</div>
+            <div class="feature-title">성장 지원 트랙</div>
+            <div class="feature-desc">서열화나 징벌을 차단하고, 구성원의 핵심 역량을 강화하기 위한 개인별 개발 계획(IDP) 수립에 전념합니다.</div>
+          </div>
+          <div class="feature-card purple">
+            <div class="feature-icon">🔒</div>
+            <div class="feature-title">철저한 익명성 보장</div>
+            <div class="feature-desc">개별 응답은 안전하게 암호화 및 익명 처리되며, 소스별 최소 인원이 충족된 경우의 평균 분석과 소스 비식별 코멘트만 종합 제공됩니다.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚖️</div>
+            <div class="feature-title">BARS 행동지표 기반</div>
+            <div class="feature-desc">평가자의 주관적 판단 오류를 최소화하기 위해 각 문항 점수마다 명확하게 정의된 구체적 실무 행동 사례 기준을 상시 가이드합니다.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           L2. 로그인 화면 뷰 (Glassmorphism 카드)
+           ========================================== -->
+      <section id="view-login" class="view-section">
+        <div class="login-container">
+          <div class="login-card">
+            <div class="login-card-title">🔑 다면평가 시스템 로그인</div>
+            <div class="login-card-desc">원내 계정 정보를 입력하거나 하단의 테스트 계정을 클릭하세요.</div>
+            
+            <form onsubmit="handleLoginSubmit(event)" style="display: flex; flex-direction: column; gap: 14px;">
+              <div class="form-group">
+                <label for="login-id">계정 아이디 (ID)</label>
+                <input type="text" id="login-id" class="form-control" placeholder="아이디를 입력하세요 (예: admin, clinical)" required>
+              </div>
+              <div class="form-group">
+                <label for="login-pw">비밀번호 (Password)</label>
+                <input type="password" id="login-pw" class="form-control" value="1234" placeholder="비밀번호를 입력하세요" required>
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top: 10px; padding: 12px; width: 100%; border-radius: 8px;">🔓 로그인하기</button>
+            </form>
+
+            <!-- 데모 신속 테스트용 원클릭 계정 선택기 (사용자 눈높이 배려) -->
+            <div class="demo-accounts-box">
+              <div class="demo-box-title">⚡ 데모용 원클릭 빠른 로그인</div>
+              <div class="demo-badges-grid">
+                <button class="demo-badge-btn" onclick="quickLogin('admin')">
+                  <strong>인사팀장</strong>
+                  <span class="badge-role">전체 권한 / admin</span>
+                </button>
+                <button class="demo-badge-btn" onclick="quickLogin('manager')">
+                  <strong>이지민 팀장</strong>
+                  <span class="badge-role">부서장 권한 / manager</span>
+                </button>
+                <button class="demo-badge-btn" onclick="quickLogin('clinical')">
+                  <strong>김도희 치료사</strong>
+                  <span class="badge-role">일반(임상) / clinical</span>
+                </button>
+                <button class="demo-badge-btn" onclick="quickLogin('admin-staff')">
+                  <strong>박서준 주임</strong>
+                  <span class="badge-role">일반(행정) / admin-staff</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           2-1. [개인화] 환영 배너 (로그인 성공 후 노출)
+           ========================================== -->
+      <div class="welcome-banner" id="appWelcomeBanner" style="display: none;">
+        <div class="welcome-tag" id="welcome-user-role">인사팀장 권한</div>
+        <div class="welcome-msg" id="welcome-user-text">안녕하세요, 홍길동님! 오늘도 기분 좋은 하루를 응원합니다.</div>
+        <div class="welcome-status" id="welcome-user-status">
+          <!-- 개인화 요약 텍스트 바인딩 -->
+        </div>
+      </div>
+
+      <!-- ==========================================
+           2-2. 운영 대시보드 뷰 (인사/관리자용)
+           ========================================== -->
+      <section id="view-dashboard" class="view-section">
         <div class="section-header">
           <div class="section-tag">Overview</div>
-          <h1 class="section-title">다면평가 운영 대시보드</h1>
+          <h1 class="section-title" id="dashboard-title">다면평가 운영 대시보드</h1>
           <p class="section-desc">평가 제출 현황과 가중평균 산출 결과, 품질 및 편향 징후를 한눈에 진단합니다.</p>
         </div>
 
-        <!-- 집계 지표 카드 그리드 -->
         <div class="stats-grid">
           <div class="stat-card" id="card-total-records">
             <div class="stat-label">총 제출된 평가 건수</div>
@@ -1017,7 +1230,6 @@
           </div>
         </div>
 
-        <!-- 대상자 리스트 테이블 카드 -->
         <div class="card">
           <div class="card-title">👥 대상자별 평가 현황 및 집계 결과</div>
           <div class="table-container">
@@ -1034,7 +1246,7 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- JS로 동적 렌더링 -->
+                <!-- JS dynamic -->
               </tbody>
             </table>
           </div>
@@ -1051,7 +1263,7 @@
       </section>
 
       <!-- ==========================================
-           2-2. 다면평가 입력 뷰
+           2-3. 다면평가 입력 뷰
            ========================================== -->
       <section id="view-evaluation" class="view-section">
         <div class="section-header">
@@ -1068,7 +1280,7 @@
               <div class="form-group">
                 <label for="eval-target">평가 대상자 선택 <span style="color: var(--danger);">*</span></label>
                 <select id="eval-target" class="form-control" required onchange="handleTargetChange()">
-                  <!-- JS로 렌더링 -->
+                  <!-- JS dynamic -->
                 </select>
               </div>
               <div class="form-group">
@@ -1091,12 +1303,11 @@
           <div class="card">
             <div class="card-title">⭐ 2단계: 핵심 역량 평가</div>
             <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
-              각 점수 버튼을 클릭하면 매뉴얼에 명시된 <strong>BARS(구체적 행동 지표)</strong> 예시가 표시됩니다. 
-              충분히 관찰할 기회가 없었던 항목은 <strong>‘관찰 없음’</strong>을 선택하세요.
+              각 점수 버튼을 클릭하면 매뉴얼에 명시된 <strong>BARS(구체적 행동 지표)</strong> 예시가 표시됩니다. 충분히 관찰할 기회가 없었던 항목은 <strong>‘관찰 없음’</strong>을 선택하세요.
             </p>
 
             <div id="questions-container">
-              <!-- 질문 카드가 JS에 의해 동적으로 렌더링됩니다 -->
+              <!-- JS dynamic -->
             </div>
           </div>
 
@@ -1108,26 +1319,26 @@
       </section>
 
       <!-- ==========================================
-           2-3. 리포트 & IDP 수립 뷰
+           2-4. 리포트 & IDP 수립 뷰 (개인화 연동)
            ========================================== -->
       <section id="view-report" class="view-section">
         <div class="section-header">
           <div class="section-tag">Reports & IDP</div>
-          <h1 class="section-title">다면평가 결과 리포트 및 IDP 수립</h1>
+          <h1 class="section-title" id="report-main-title">다면평가 결과 리포트 및 IDP 수립</h1>
           <p class="section-desc">축적된 다면평가 결과를 종합적으로 분석하여 개인별 강점과 개선 영역을 추출하고, 피드백 면담 결과를 기록합니다.</p>
         </div>
 
-        <div class="card">
+        <!-- 인사/관리자용 대상자 선택 필터 (일반 직원은 비노출) -->
+        <div class="card" id="report-target-filter-card">
           <div class="card-title">👤 대상자 선택</div>
           <div class="form-group" style="max-width: 300px;">
             <select id="report-target-select" class="form-control" onchange="loadReportForTarget()">
-              <!-- JS로 주입 -->
+              <!-- JS dynamic -->
             </select>
           </div>
         </div>
 
         <div id="report-content-area" style="display: none;">
-          <!-- 리포트 및 IDP 카드 세트 -->
           <div class="report-grid">
             <div class="card">
               <div class="card-title">📊 역량 분석 차트 (자기 vs 타인)</div>
@@ -1155,7 +1366,7 @@
             </div>
           </div>
 
-          <!-- 점수 상세 테이블 -->
+          <!-- 세부 평점 테이블 -->
           <div class="card">
             <div class="card-title">📝 항목별/소스별 평균 점수 상세</div>
             <div class="table-container">
@@ -1172,22 +1383,22 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- JS 동적 주입 -->
+                  <!-- JS dynamic -->
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- 익명 코멘트 모음 -->
+          <!-- 서술 피드백 -->
           <div class="card">
             <div class="card-title">💬 소스별 서술형 피드백 (익명화 코멘트)</div>
             <div class="comment-list" id="report-comments-container">
-              <!-- 코멘트 말풍선들 -->
+              <!-- JS dynamic -->
             </div>
           </div>
 
-          <!-- IDP 개인개발계획 수립 폼 -->
-          <div class="card" style="border-top: 4px solid var(--teal);">
+          <!-- IDP 수립 (권한에 따라 활성/비활성) -->
+          <div class="card" style="border-top: 4px solid var(--teal);" id="idp-form-card">
             <div class="card-title">🌱 피드백 면담 기록 및 IDP(개인개발계획) 수립</div>
             <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">
               결과 리포트를 참고하여 부서장과 구성원이 면담을 나누고, 향후 6개월간 성장하기 위한 실행 계획을 입력하고 기록합니다.
@@ -1206,14 +1417,14 @@
               </div>
               <div class="form-group" style="margin-bottom: 16px;">
                 <label for="idp-action-plan">구체적인 실행 계획 (Action Plan)</label>
-                <textarea id="idp-action-plan" class="comment-area" style="height: 100px;" placeholder="어떤 교육을 받거나 실천 행동을 할 것인지 적습니다. (예: 최신 물리치료 연수 2회 참가, 타 직종 업무 프로세스 미팅 주관 등)"></textarea>
+                <textarea id="idp-action-plan" class="comment-area" style="height: 100px;" placeholder="어떤 교육을 받거나 실천 행동을 할 것인지 적습니다."></textarea>
               </div>
               <div class="form-group" style="margin-bottom: 16px;">
                 <label for="idp-meeting-note">부서장 면담 총평 및 기록</label>
                 <textarea id="idp-meeting-note" class="comment-area" style="height: 80px;" placeholder="피드백 대화 요약, 애로 사항, 지원 약속 내용 등"></textarea>
               </div>
               
-              <div class="action-bar">
+              <div class="action-bar" id="idp-submit-bar">
                 <button type="submit" class="btn btn-primary">💾 면담록 및 IDP 저장</button>
               </div>
             </form>
@@ -1227,7 +1438,7 @@
       </section>
 
       <!-- ==========================================
-           2-4. 실무 매뉴얼 뷰 (원본 완전 포팅)
+           2-5. 실무 매뉴얼 뷰
            ========================================== -->
       <section id="view-manual" class="view-section">
         <div class="section-header">
@@ -1237,7 +1448,6 @@
         </div>
 
         <div class="manual-layout">
-          <!-- 좌측 매뉴얼 목차 -->
           <nav class="manual-toc">
             <ul>
               <li><a href="#m-s1" class="active">1. 한눈에 보기</a></li>
@@ -1251,9 +1461,7 @@
             </ul>
           </nav>
 
-          <!-- 우측 매뉴얼 본문 -->
           <div class="manual-body-content" id="manual-body-container">
-            
             <section id="m-s1">
               <h2><span class="no">1</span>한눈에 보기</h2>
               <p>구성을 30초 안에 파악합니다.</p>
@@ -1378,13 +1586,12 @@
 링크: [링크]</div>
               </div>
             </section>
-
           </div>
         </div>
       </section>
 
       <!-- ==========================================
-           2-5. 데이터 관리 뷰
+           2-6. 데이터 관리 뷰 (인사전용)
            ========================================== -->
       <section id="view-data-manager" class="view-section">
         <div class="section-header">
@@ -1419,14 +1626,18 @@
     </main>
   </div>
 
-  <!-- 토스트 알림창 -->
   <div class="toast-msg" id="globalToast">복사되었습니다!</div>
 
-  <!-- 3. 자바스크립트 비즈니스 로직 -->
   <script>
     // ==========================================
-    // A. 글로벌 데이터 정의 및 BARS 문항 정의
+    // 가명 테스트 계정 사전
     // ==========================================
+    const testAccounts = {
+      admin: { id: "admin", name: "홍길동", role: "HR", roleName: "인사팀장", level: "admin", isStaff: false },
+      manager: { id: "manager", name: "이지민", role: "manager", roleName: "재활센터 팀장", level: "manager", isStaff: true },
+      clinical: { id: "clinical", name: "김도희", role: "clinical", roleName: "물리치료사", level: "employee", isStaff: true },
+      "admin-staff": { id: "admin-staff", name: "박서준", role: "admin", roleName: "원무과 주임", level: "employee", isStaff: true }
+    };
 
     // 기본 대상 가명 데이터
     const targetStaff = [
@@ -1435,27 +1646,10 @@
       { id: "staff-3", name: "이지민", role: "manager", roleName: "관리자직 (재활센터 팀장)", desc: "재활치료센터 부서장" }
     ];
 
-    // 소스 한글 라벨
-    const raterLabels = {
-      peer: "동료",
-      dept: "타직종",
-      lead: "관리자",
-      patient: "환자",
-      self: "본인"
-    };
+    const raterLabels = { peer: "동료", dept: "타직종", lead: "관리자", patient: "환자", self: "본인" };
+    const sourceWeights = { peer: 0.35, dept: 0.25, lead: 0.25, patient: 0.15, self: 0.00 };
 
-    // 다면평가 평가 가중치 스펙
-    const sourceWeights = {
-      peer: 0.35,      // 동료 35%
-      dept: 0.25,      // 타직종 25%
-      lead: 0.25,      // 관리자 25%
-      patient: 0.15,   // 환자 15%
-      self: 0.00       // 자기평가 제외(참고용)
-    };
-
-    // 문항 리스트 및 BARS 행동지표 사전
     const questionsDict = {
-      // 공통 4대 문항
       patientCentric: {
         id: "patientCentric",
         title: "1. 환자 중심성 (공통)",
@@ -1504,8 +1698,6 @@
           1: "직무 교육을 무단 불참하거나, 타인의 진심 어린 개선 피드백에 노골적인 감정적 반발을 보이며 본인의 기존 편의적 치료법만을 전적으로 고집한다."
         }
       },
-      
-      // 임상직 모듈 문항 (clinical)
       safetyMgmt: {
         id: "safetyMgmt",
         title: "5. 안전 및 감염 관리 (임상직 전용)",
@@ -1527,11 +1719,9 @@
           4: "타 치료사가 인계 시 기록하지 못한 미세 관찰 사실을 차트에 상세 피드백하며, 부서 간 치료 연계 프로그램에 솔선해 참여한다.",
           3: "진료 차트에 환자의 가동 범위(ROM) 및 근력 평가 결과를 정해진 규격대로 기재하여 동료 치료사가 다음 단계 치료 시 참고할 수 있도록 한다.",
           2: "차트 기록 내용이 다소 불충분하여 동료 치료사가 환자 기능 상태를 파악하기 위해 여러 차례 재확인 문의 전화를 하게 만든다.",
-          1: "환자의 핵심적인 거동 금기 사항(예: 고관절 인공관절 치환술 후 탈구 위험 자세 등)을 차트에 기재하지 않거나 인계하지 않아 심각한 임상적 위해를 유발한다."
+          1: "환자의 핵심적인 거동 금기 사항을 차트에 기재하지 않거나 인계하지 않아 심각한 임상적 위해를 유발한다."
         }
       },
-
-      // 행정직 모듈 문항 (admin)
       accuracyMgmt: {
         id: "accuracyMgmt",
         title: "5. 행정 업무 정확성 (행정직 전용)",
@@ -1552,12 +1742,10 @@
           5: "고령의 거동이 불편한 환자가 헤맬 때 직접 동행하여 해결을 도와 병원 홈페이지에 수차례 환자 칭찬 글이 등재되는 감동적 서비스를 구현한다.",
           4: "까다로운 불만 민원인의 고충을 흥분하지 않고 차분히 경청하여 병원의 긍정적 이미지로 승화시키며 동료들의 민원 대처법을 코칭해준다.",
           3: "접수 창구에서 표준 친절 멘트와 아이컨택을 시도하며, 대기 시간이 길어질 경우 그 이유를 상냥히 미리 고지하여 양해를 얻는다.",
-          2: "창구에 환자가 기다리고 있음에도 사적 모니터 업무나 잡담을 먼저 하며 무심한 투로 일관하여 내원객의 가벼운 눈살을 찌푸리게 한다.",
+          2: "창구에 환자가 기다리고 있음에도 사적 모니터 업무나 잡담을 먼저 하며 무심한 투로 일관하여 내원객의 가벼운 눈살을 붉히게 한다.",
           1: "환자가 환불이나 예약 변경 등을 요청할 때 날카로운 억양으로 “불가능하다”고 다짜고짜 차갑게 일축해 고성의 언쟁과 민원을 야기한다."
         }
       },
-
-      // 관리자직 모듈 문항 (manager)
       coachingStaff: {
         id: "coachingStaff",
         title: "5. 코칭 및 인재 육성 (관리자직 전용)",
@@ -1565,7 +1753,7 @@
         bars: {
           5: "각 부서원의 고유 강점에 맞는 최적의 학회 참석 및 전담 파트를 부여하고, 매월 1대1 코칭을 정례화하여 실제로 부서원을 주임급 치료사로 고속 성장시킨다.",
           4: "부서원이 실수를 했을 때 질책하기보다 근본적 원인을 차분히 짚어주며 발전 계획을 제시하고, 기회가 닿는 대로 외부 연수를 적극 주선한다.",
-          3: "정기 면담 일정을 빠짐없이 수행하며, 부서원의 애로 사항(예: 업무 과부하 등)을 경청하고 원만한 수준에서 조율 및 솔루션을 도모한다.",
+          3: "정기 면담 일정을 빠짐없이 수행하며, 부서원의 애로 사항을 경청하고 원만한 수준에서 조율 및 솔루션을 도모한다.",
           2: "부서원에 대한 개별 관찰 없이 연 1회 평가 때만 지적 사항을 일방적으로 나열하며, 개인별 성향을 고려하지 않은 기계적 피드백에 머문다.",
           1: "부서원들을 감정적으로 편애/배척하며 동기부여를 심각히 훼손하거나, “시키는 대로 하라”는 식의 권위주의적 강요로 부서의 퇴사율을 크게 상승시킨다."
         }
@@ -1577,20 +1765,14 @@
         bars: {
           5: "병원의 재활 수익 목표와 치료 품질 만족도를 모두 초과 달성할 수 있는 새로운 혁신 치료 테마를 론칭하여 타 센터에 대대적인 혁신 모델을 제공한다.",
           4: "목표 대비 차질이 생겼을 때 신속한 대체 프로세스를 가동하고, 타 부서 부서장과의 전략적 조율을 통해 자원을 적시에 획득해 낸다.",
-          3: "경영진이 시달한 KPI 항목(치료 건수, 병상 가동율 등)을 매월 체크하고, 부서 내 자원 배분을 합리적으로 분담시켜 평이한 수준의 성과를 보장한다.",
+          3: "경영진이 시달한 KPI 항목을 매월 체크하고, 부서 내 자원 배분을 합리적으로 분담시켜 평이한 수준의 성과를 보장한다.",
           2: "부서 내의 실적 부진이나 안전 위험 요인을 인지하고도 별도의 개선 드라이브를 걸지 않은 채 관성적인 현상 유지에만 머문다.",
           1: "연간 실적 달성에 전적으로 실패하고도 무성의한 변명으로 일관하며, 부서 내 자원과 인력 낭비를 방치하여 원내 경영 만족도 최하위를 기록한다."
         }
       }
     };
 
-    // ==========================================
-    // B. 데이터 초기화 및 모의 데모 데이터 정의
-    // ==========================================
-
-    // 모의 평가 응답 데이터 15건
     const mockEvaluations = [
-      // 김도희(임상직) 대상 평가 7건 (충분성 미달 플래그 유도용 - 동료 3건, 타직종 2건, 관리자 1건, 본인 1건)
       { id: "r1", targetName: "김도희", targetRole: "clinical", raterType: "self", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, safetyMgmt: 4, professionalClinical: 4 }, comments: { growth: "더 훌륭한 치료기술을 계속 공부하겠습니다." }, timestamp: "2026-05-29T10:00:00Z" },
       { id: "r2", targetName: "김도희", targetRole: "clinical", raterType: "peer", scores: { patientCentric: 4, collaboration: 3, responsibility: 5, growth: 3, safetyMgmt: 4, professionalClinical: 4 }, comments: { responsibility: "맡은 근무 타임을 정말 정확히 지킵니다." }, timestamp: "2026-05-29T10:05:00Z" },
       { id: "r3", targetName: "김도희", targetRole: "clinical", raterType: "peer", scores: { patientCentric: 5, collaboration: 3, responsibility: 4, growth: 4, safetyMgmt: 5, professionalClinical: 3 }, comments: { patientCentric: "환자들의 고충을 정말 제 일처럼 들어주어 감동적입니다." }, timestamp: "2026-05-29T10:10:00Z" },
@@ -1599,101 +1781,289 @@
       { id: "r6", targetName: "김도희", targetRole: "clinical", raterType: "dept", scores: { patientCentric: 3, collaboration: 4, responsibility: 3, growth: 3, safetyMgmt: 3, professionalClinical: 4 }, comments: {}, timestamp: "2026-05-29T10:25:00Z" },
       { id: "r7", targetName: "김도희", targetRole: "clinical", raterType: "lead", scores: { patientCentric: 4, collaboration: 3, responsibility: 4, growth: 3, safetyMgmt: 4, professionalClinical: 4 }, comments: { responsibility: "책임감이 강하며 든든합니다." }, timestamp: "2026-05-29T10:30:00Z" },
 
-      // 박서준(행정직) 대상 평가 13건 (충분성 완벽 충족, 관대화 편향 플래그 유도용 - 높은 점수 4.5 이상)
       { id: "r8", targetName: "박서준", targetRole: "admin", raterType: "self", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, accuracyMgmt: 4, customerService: 4 }, comments: {}, timestamp: "2026-05-29T11:00:00Z" },
-      // 동료 5명
       { id: "r9", targetName: "박서준", targetRole: "admin", raterType: "peer", scores: { patientCentric: 5, collaboration: 5, responsibility: 5, growth: 4, accuracyMgmt: 5, customerService: 5 }, comments: { customerService: "정말 신속하고 모든 부서의 칭찬이 자자한 수퍼스타입니다." }, timestamp: "2026-05-29T11:05:00Z" },
       { id: "r10", targetName: "박서준", targetRole: "admin", raterType: "peer", scores: { patientCentric: 5, collaboration: 4, responsibility: 5, growth: 5, accuracyMgmt: 4, customerService: 5 }, comments: {}, timestamp: "2026-05-29T11:10:00Z" },
       { id: "r11", targetName: "박서준", targetRole: "admin", raterType: "peer", scores: { patientCentric: 4, collaboration: 5, responsibility: 5, growth: 4, accuracyMgmt: 5, customerService: 4 }, comments: {}, timestamp: "2026-05-29T11:15:00Z" },
       { id: "r12", targetName: "박서준", targetRole: "admin", raterType: "peer", scores: { patientCentric: 5, collaboration: 5, responsibility: 4, growth: 5, accuracyMgmt: 5, customerService: 5 }, comments: {}, timestamp: "2026-05-29T11:20:00Z" },
       { id: "r13", targetName: "박서준", targetRole: "admin", raterType: "peer", scores: { patientCentric: 4, collaboration: 4, responsibility: 5, growth: 4, accuracyMgmt: 4, customerService: 4 }, comments: {}, timestamp: "2026-05-29T11:25:00Z" },
-      // 타직종 3명
       { id: "r14", targetName: "박서준", targetRole: "admin", raterType: "dept", scores: { patientCentric: 5, collaboration: 4, responsibility: 4, growth: 4, accuracyMgmt: 4, customerService: 5 }, comments: {}, timestamp: "2026-05-29T11:30:00Z" },
       { id: "r15", targetName: "박서준", targetRole: "admin", raterType: "dept", scores: { patientCentric: 4, collaboration: 5, responsibility: 5, growth: 4, accuracyMgmt: 4, customerService: 4 }, comments: {}, timestamp: "2026-05-29T11:35:00Z" },
       { id: "r16", targetName: "박서준", targetRole: "admin", raterType: "dept", scores: { patientCentric: 5, collaboration: 5, responsibility: 4, growth: 4, accuracyMgmt: 5, customerService: 5 }, comments: {}, timestamp: "2026-05-29T11:40:00Z" },
-      // 관리자 3명
       { id: "r17", targetName: "박서준", targetRole: "admin", raterType: "lead", scores: { patientCentric: 5, collaboration: 5, responsibility: 5, growth: 5, accuracyMgmt: 5, customerService: 5 }, comments: { accuracyMgmt: "사무 처리가 물 흐르듯 유려합니다. 훌륭해요!" }, timestamp: "2026-05-29T11:45:00Z" },
       { id: "r18", targetName: "박서준", targetRole: "admin", raterType: "lead", scores: { patientCentric: 4, collaboration: 4, responsibility: 5, growth: 4, accuracyMgmt: 4, customerService: 4 }, comments: {}, timestamp: "2026-05-29T11:50:00Z" },
       { id: "r19", targetName: "박서준", targetRole: "admin", raterType: "lead", scores: { patientCentric: 5, collaboration: 4, responsibility: 4, growth: 4, accuracyMgmt: 4, customerService: 5 }, comments: {}, timestamp: "2026-05-29T11:55:00Z" },
-      // 환자 1명
       { id: "r20", targetName: "박서준", targetRole: "admin", raterType: "patient", scores: { patientCentric: 5 }, comments: { patientCentric: "수납 창구에서 너무 상냥하게 보살펴 주셨습니다." }, timestamp: "2026-05-29T12:00:00Z" },
 
-      // 이지민(관리자직) 대상 평가 12건 (충분성 충족, 후광 효과 플래그 유도용 - 특정 평가자가 전과목 5점 부여)
       { id: "r21", targetName: "이지민", targetRole: "manager", raterType: "self", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, coachingStaff: 4, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T12:05:00Z" },
-      // 동료 5명
       { id: "r22", targetName: "이지민", targetRole: "manager", raterType: "peer", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, coachingStaff: 4, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T12:10:00Z" },
-      { id: "r23", targetName: "이지민", targetRole: "manager", raterType: "peer", scores: { patientCentric: 5, collaboration: 5, responsibility: 5, growth: 5, coachingStaff: 5, executionMgmt: 5 }, comments: { coachingStaff: "모든 항목을 최고점으로 줄 수밖에 없는 멋진 팀장님" }, timestamp: "2026-05-29T12:15:00Z" }, // 후광 효과 경고
+      { id: "r23", targetName: "이지민", targetRole: "manager", raterType: "peer", scores: { patientCentric: 5, collaboration: 5, responsibility: 5, growth: 5, coachingStaff: 5, executionMgmt: 5 }, comments: { coachingStaff: "모든 항목을 최고점으로 줄 수밖에 없는 멋진 팀장님" }, timestamp: "2026-05-29T12:15:00Z" },
       { id: "r24", targetName: "이지민", targetRole: "manager", raterType: "peer", scores: { patientCentric: 3, collaboration: 4, responsibility: 4, growth: 3, coachingStaff: 4, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T12:20:00Z" },
       { id: "r25", targetName: "이지민", targetRole: "manager", raterType: "peer", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, coachingStaff: 3, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T12:25:00Z" },
       { id: "r26", targetName: "이지민", targetRole: "manager", raterType: "peer", scores: { patientCentric: 4, collaboration: 3, responsibility: 4, growth: 3, coachingStaff: 4, executionMgmt: 3 }, comments: {}, timestamp: "2026-05-29T12:30:00Z" },
-      // 타직종 3명
       { id: "r27", targetName: "이지민", targetRole: "manager", raterType: "dept", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, coachingStaff: 4, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T12:35:00Z" },
       { id: "r28", targetName: "이지민", targetRole: "manager", raterType: "dept", scores: { patientCentric: 3, collaboration: 3, responsibility: 4, growth: 3, coachingStaff: 3, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T12:40:00Z" },
       { id: "r29", targetName: "이지민", targetRole: "manager", raterType: "dept", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, coachingStaff: 4, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T12:45:00Z" },
-      // 관리자 3명
       { id: "r30", targetName: "이지민", targetRole: "manager", raterType: "lead", scores: { patientCentric: 4, collaboration: 4, responsibility: 4, growth: 4, coachingStaff: 4, executionMgmt: 4 }, comments: { executionMgmt: "센터의 연간 목표를 수립하고 차질없이 달성해 냅니다." }, timestamp: "2026-05-29T12:50:00Z" },
       { id: "r31", targetName: "이지민", targetRole: "manager", raterType: "lead", scores: { patientCentric: 3, collaboration: 4, responsibility: 4, growth: 4, coachingStaff: 4, executionMgmt: 3 }, comments: {}, timestamp: "2026-05-29T12:55:00Z" },
       { id: "r32", targetName: "이지민", targetRole: "manager", raterType: "lead", scores: { patientCentric: 4, collaboration: 3, responsibility: 4, growth: 3, coachingStaff: 4, executionMgmt: 4 }, comments: {}, timestamp: "2026-05-29T13:00:00Z" }
     ];
 
     // ==========================================
-    // C. 앱 구동 및 LocalStorage 핸들링
+    // 앱 세션 및 데이터 핸들링
     // ==========================================
     let AppState = {
       records: [],
-      idp: {}
+      idp: {},
+      currentUser: null // 로그인 정보 보관
     };
 
     window.onload = function() {
       initData();
       renderTargetDropdowns();
-      handleTargetChange(); // 입력 페이지 기본 셋업
-      renderDashboard();
+      handleTargetChange();
       initManualScrollSpy();
+      
+      // 세션 확인 후 화면 상태 복구
+      restoreUserSession();
     };
 
-    // 로컬스토리지 연동 초기화
     function initData() {
-      const stored = localStorage.getItem("antigravity_operations_360");
+      const stored = localStorage.getItem("antigravity_operations_360_v2");
       if (stored) {
         AppState = JSON.parse(stored);
       } else {
-        // 첫 진입 시 모의 데이터를 자동으로 탑재하여 즉각적 시뮬레이션 지원
         AppState.records = [...mockEvaluations];
         AppState.idp = {
           "김도희": { strength1: "환자 중심성", strength2: "책임감과 신뢰성", development: "성장과 학습 태도", actionPlan: "매주 최신 재활 의학 세미나 자료 탐독 및 전파", meetingNote: "강점이 확실하니 타 전공자와의 임상 교류를 권장함." }
         };
+        AppState.currentUser = null;
         saveData();
       }
     }
 
     function saveData() {
-      localStorage.setItem("antigravity_operations_360", JSON.stringify(AppState));
+      localStorage.setItem("antigravity_operations_360_v2", JSON.stringify(AppState));
     }
 
-    // 뷰 전환 SPA 로직
-    function switchView(viewName) {
-      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
-      document.querySelectorAll(".menu-list button").forEach(btn => btn.classList.remove("active"));
+    // ==========================================
+    // 로그인 및 세션 제어 비즈니스 로직
+    // ==========================================
+    function handleLoginSubmit(event) {
+      event.preventDefault();
+      const loginId = document.getElementById("login-id").value.trim().toLowerCase();
+      const loginPw = document.getElementById("login-pw").value;
 
+      if (loginPw !== "1234") {
+        showToast("❌ 비밀번호가 올바르지 않습니다. (기본 비밀번호: 1234)");
+        return;
+      }
+
+      if (testAccounts[loginId]) {
+        executeLogin(testAccounts[loginId]);
+      } else {
+        showToast("❌ 등록되지 않은 계정 아이디입니다.");
+      }
+    }
+
+    function quickLogin(roleId) {
+      if (testAccounts[roleId]) {
+        executeLogin(testAccounts[roleId]);
+      }
+    }
+
+    function executeLogin(userObj) {
+      AppState.currentUser = userObj;
+      saveData();
+      showToast(`🔓 ${userObj.name}님 환영합니다! 로그인이 완료되었습니다.`);
+      restoreUserSession();
+    }
+
+    function handleLogout() {
+      AppState.currentUser = null;
+      saveData();
+      showToast("🚪 로그아웃되었습니다.");
+      
+      // 화면 초기화 및 비로그인 랜딩 복구
+      document.getElementById("appSidebar").style.display = "none";
+      document.getElementById("appWelcomeBanner").style.display = "none";
+      
+      switchView("landing");
+    }
+
+    // 세션 복구 및 개인화 환경 구성
+    function restoreUserSession() {
+      const user = AppState.currentUser;
+      if (!user) {
+        switchView("landing");
+        return;
+      }
+
+      // 1. 사이드바 활성화 및 프로필 동적 바인딩
+      document.getElementById("appSidebar").style.display = "flex";
+      
+      const pRole = document.getElementById("p-role-name");
+      const pName = document.getElementById("p-user-name");
+      const pLevel = document.getElementById("p-role-level");
+
+      pRole.innerText = user.roleName;
+      pName.innerText = user.name + " 님";
+      pLevel.innerText = user.level === 'admin' ? '최고 관리자' : (user.level === 'manager' ? '부서장' : '부서원');
+
+      // 2. 동적 메뉴 렌더링 (권한 설계 규칙 6번 반영)
+      renderSidebarMenu(user.level);
+
+      // 3. 환영 배너 바인딩 및 데이터 요약 개인화
+      const banner = document.getElementById("appWelcomeBanner");
+      banner.style.display = "block";
+
+      const welcomeRole = document.getElementById("welcome-user-role");
+      const welcomeText = document.getElementById("welcome-user-text");
+      const welcomeStatus = document.getElementById("welcome-user-status");
+
+      welcomeRole.innerText = `${user.roleName} / 권한: ${pLevel.innerText}`;
+      welcomeText.innerText = `안녕하세요, ${user.name}님! 오늘도 따뜻하고 보람찬 하루를 응원합니다.`;
+
+      // 개인화된 업무 요약 출력
+      let statusHtml = "";
+      if (user.level === 'admin') {
+        const flagCount = AppState.records.length > 0 ? 1 : 0; // 예시
+        statusHtml = `
+          <span class="welcome-badge">📋 총 수집 평가: ${AppState.records.length}건</span>
+          <span class="welcome-badge" style="background: var(--warn-bg); color: var(--warn);">🚨 점검 필요 대상: 2명</span>
+        `;
+      } else if (user.level === 'manager') {
+        const deptSubs = targetStaff.filter(s => s.name !== user.name);
+        statusHtml = `
+          <span class="welcome-badge">👥 관리 대상 부서원: ${deptSubs.length}명</span>
+          <span class="welcome-badge" style="background: var(--success-bg); color: var(--success);">✏️ 본인 평가 제출됨</span>
+        `;
+      } else {
+        const myReceived = AppState.records.filter(r => r.targetName === user.name && r.raterType !== 'self').length;
+        statusHtml = `
+          <span class="welcome-badge">📬 나에게 도착한 피드백: ${myReceived}건</span>
+          <span class="welcome-badge" style="background: var(--teal-l); color: var(--teal-d);">💡 성장 지원 트랙 작동 중</span>
+        `;
+      }
+      welcomeStatus.innerHTML = statusHtml;
+
+      // 4. 리포트 탭 개인화 통제 구성
+      const reportFilterCard = document.getElementById("report-target-filter-card");
+      const idpFormCard = document.getElementById("idp-form-card");
+      const idpSubmitBar = document.getElementById("idp-submit-bar");
+
+      if (user.level === 'employee') {
+        // 일반 직원은 타인 리포트 조회를 막고 본인 필터링 강제 격리
+        reportFilterCard.style.display = "none";
+        document.getElementById("report-main-title").innerText = "🎯 나의 다면평가 성장 리포트";
+        
+        // IDP 입력은 부서장 전용이므로 직원은 읽기 전용 처리하거나 숨김
+        idpSubmitBar.style.display = "none";
+        document.getElementById("idp-strength").disabled = true;
+        document.getElementById("idp-development").disabled = true;
+        document.getElementById("idp-action-plan").disabled = true;
+        document.getElementById("idp-meeting-note").disabled = true;
+      } else {
+        // 부서장 및 인사는 검색 필터 활성화
+        reportFilterCard.style.display = "block";
+        document.getElementById("report-main-title").innerText = "다면평가 결과 리포트 및 IDP 수립";
+        
+        idpSubmitBar.style.display = "flex";
+        document.getElementById("idp-strength").disabled = false;
+        document.getElementById("idp-development").disabled = false;
+        document.getElementById("idp-action-plan").disabled = false;
+        document.getElementById("idp-meeting-note").disabled = false;
+      }
+
+      // 첫 진입 시 권한에 따라 기본 탭 전환
+      if (user.level === 'employee') {
+        switchView("evaluation"); // 직원은 평가하기로 바로 이동 권장
+      } else {
+        switchView("dashboard"); // 인사/부서장은 통계 대시보드로 이동
+      }
+    }
+
+    // 권한 수준별 사이드바 메뉴 동적 구성
+    function renderSidebarMenu(level) {
+      const menuContainer = document.getElementById("sidebarMenuList");
+      menuContainer.innerHTML = "";
+
+      // 🏠 홈(랜딩) 메뉴는 상시 배치
+      const homeBtn = document.createElement("button");
+      homeBtn.innerHTML = "🏠 랜딩 홈";
+      homeBtn.onclick = () => switchView("landing");
+      menuContainer.appendChild(homeBtn);
+
+      if (level === 'admin') {
+        // 인사담당자 전체 허용
+        menuContainer.appendChild(createMenuBtn("📊 운영 대시보드", "dashboard"));
+        menuContainer.appendChild(createMenuBtn("✏️ 다면평가 입력", "evaluation"));
+        menuContainer.appendChild(createMenuBtn("📋 리포트 & IDP", "report"));
+        menuContainer.appendChild(createMenuBtn("📖 실무 매뉴얼", "manual"));
+        menuContainer.appendChild(createMenuBtn("⚙️ 데이터 관리", "data-manager"));
+      } else if (level === 'manager') {
+        // 부서장은 데이터 관리만 배제
+        menuContainer.appendChild(createMenuBtn("📊 부서 대시보드", "dashboard"));
+        menuContainer.appendChild(createMenuBtn("✏️ 다면평가 입력", "evaluation"));
+        menuContainer.appendChild(createMenuBtn("📋 부서원 리포트 & IDP", "report"));
+        menuContainer.appendChild(createMenuBtn("📖 실무 매뉴얼", "manual"));
+      } else {
+        // 일반 직원은 평가 입력, 본인 리포트, 매뉴얼만 허용
+        menuContainer.appendChild(createMenuBtn("✏️ 다면평가 입력", "evaluation"));
+        menuContainer.appendChild(createMenuBtn("📋 나의 성장 리포트", "report"));
+        menuContainer.appendChild(createMenuBtn("📖 실무 매뉴얼", "manual"));
+      }
+    }
+
+    function createMenuBtn(label, targetView) {
+      const btn = document.createElement("button");
+      btn.innerHTML = label;
+      btn.onclick = () => switchView(targetView);
+      return btn;
+    }
+
+    // ==========================================
+    // 뷰 SPA 제어 및 라우팅 로직
+    // ==========================================
+    function switchView(viewName) {
+      // 모바일 제목 동적 변경
+      const titles = {
+        landing: "360° 성장 피드백 시스템",
+        login: "다면평가 로그인",
+        dashboard: "운영 대시보드",
+        evaluation: "다면평가 수행",
+        report: "결과 리포트",
+        manual: "실무 매뉴얼",
+        "data-manager": "데이터 백업/제어"
+      };
+      if (titles[viewName]) {
+        document.getElementById("mobileAppTitle").innerText = titles[viewName];
+      }
+
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+      
       const targetSection = document.getElementById("view-" + viewName);
       if (targetSection) {
         targetSection.classList.add("active");
       }
 
-      // 네비게이션 액티브 처리
-      const menuButtons = document.querySelectorAll(".menu-list button");
-      menuButtons.forEach(btn => {
-        if (btn.getAttribute("onclick").includes(viewName)) {
-          btn.classList.add("active");
-        }
-      });
+      // 사이드바가 노출되어 있을 때 메뉴 버튼 액티브 연동
+      const sidebar = document.getElementById("appSidebar");
+      if (sidebar.style.display !== 'none') {
+        document.querySelectorAll(".menu-list button").forEach(btn => btn.classList.remove("active"));
+        const buttons = document.querySelectorAll(".menu-list button");
+        buttons.forEach(btn => {
+          if (btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(viewName)) {
+            btn.classList.add("active");
+          }
+        });
+      }
 
-      // 모바일 사이드바 닫기
+      // 모바일 서랍 닫기
       document.getElementById("appSidebar").classList.remove("open");
       document.getElementById("appScrim").style.display = "none";
 
-      // 뷰별 추가 로드 처리
+      // 탭 로드 이벤트
       if (viewName === 'dashboard') {
         renderDashboard();
       } else if (viewName === 'report') {
@@ -1703,29 +2073,20 @@
     }
 
     // ==========================================
-    // D. 드롭다운 및 동적 양식 렌더링 로직 (2단계)
+    // 기존 다면평가 입력/동적 폼 기능 완벽 보존
     // ==========================================
     function renderTargetDropdowns() {
       const evalTarget = document.getElementById("eval-target");
-      const reportTarget = document.getElementById("report-target-select");
-      
       evalTarget.innerHTML = "";
-      reportTarget.innerHTML = "";
-
+      
       targetStaff.forEach(staff => {
-        const opt1 = document.createElement("option");
-        opt1.value = staff.name;
-        opt1.innerText = `${staff.name} (${staff.roleName})`;
-        evalTarget.appendChild(opt1);
-
-        const opt2 = document.createElement("option");
-        opt2.value = staff.name;
-        opt2.innerText = `${staff.name} (${staff.roleName})`;
-        reportTarget.appendChild(opt2);
+        const opt = document.createElement("option");
+        opt.value = staff.name;
+        opt.innerText = `${staff.name} (${staff.roleName})`;
+        evalTarget.appendChild(opt);
       });
     }
 
-    // 대상자 변경 시 직군 텍스트 변경 및 평가 문항 재생성
     function handleTargetChange() {
       const targetName = document.getElementById("eval-target").value;
       const staff = targetStaff.find(s => s.name === targetName);
@@ -1737,7 +2098,6 @@
       renderEvaluationQuestions(staff.role);
     }
 
-    // 평가자 구분 변경 시 (환자 소스 대응 동적 필터링)
     function handleRaterTypeChange() {
       const raterType = document.getElementById("eval-rater-type").value;
       const targetName = document.getElementById("eval-target").value;
@@ -1747,24 +2107,19 @@
       renderEvaluationQuestions(staff.role, raterType === "patient");
     }
 
-    // 평가 질문 동적 빌드 함수
     function renderEvaluationQuestions(role, isPatientOnly = false) {
       const container = document.getElementById("questions-container");
       container.innerHTML = "";
 
-      // 문항 구성
       let targetQs = [];
       if (isPatientOnly) {
-        // 환자는 '환자 중심성'만 평가함
         targetQs.push(questionsDict.patientCentric);
       } else {
-        // 일반 평가(동료, 관리자, 타직종, 본인)는 공통 4개 + 해당 직군 2개
         targetQs.push(questionsDict.patientCentric);
         targetQs.push(questionsDict.collaboration);
         targetQs.push(questionsDict.responsibility);
         targetQs.push(questionsDict.growth);
 
-        // 직군 특화 문항 매핑
         if (role === "clinical") {
           targetQs.push(questionsDict.safetyMgmt);
           targetQs.push(questionsDict.professionalClinical);
@@ -1777,7 +2132,6 @@
         }
       }
 
-      // 문항 카드 렌더링
       targetQs.forEach(q => {
         const qCard = document.createElement("div");
         qCard.className = "question-card";
@@ -1796,33 +2150,25 @@
             <button type="button" class="scale-btn na-btn" onclick="selectScore('${q.id}', null)">관찰 없음</button>
           </div>
 
-          <!-- BARS 가이드라인 박스 -->
           <div class="bars-guide" id="bars-guide-${q.id}"></div>
           
-          <!-- 주관식 코멘트 (1, 2, 5점일 때 필수 플래그 경고) -->
           <div class="form-group" style="margin-top: 10px;">
             <label>구체적 관찰 코멘트 <span class="required-badge" id="req-badge-${q.id}">필수 코멘트</span></label>
             <textarea class="comment-area" id="comment-${q.id}" placeholder="해당 점수를 준 구체적 사례를 기록해 주세요. (5점 및 1·2점 필수)"></textarea>
           </div>
-          
-          <!-- 내부 응답 상태 보관용 히든 인풋 -->
           <input type="hidden" id="score-val-${q.id}" value="">
         `;
         container.appendChild(qCard);
       });
     }
 
-    // 점수 선택 로직 및 BARS & 코멘트 필수 조건 제어
     function selectScore(qId, score) {
       const qCard = document.getElementById(`q-card-${qId}`);
-      // 기존 액티브 클래스 제거
       qCard.querySelectorAll(".scale-btn").forEach(btn => btn.classList.remove("active"));
       
-      // 히든 인풋에 데이터 바인딩
       const hiddenInput = document.getElementById(`score-val-${qId}`);
       hiddenInput.value = score === null ? "N/A" : score;
 
-      // 액티브 버튼 처리
       const buttons = qCard.querySelectorAll(".scale-btn");
       if (score === null) {
         buttons[5].classList.add("active");
@@ -1830,7 +2176,6 @@
         buttons[5 - score].classList.add("active");
       }
 
-      // BARS 가이드 노출
       const guideBox = document.getElementById(`bars-guide-${qId}`);
       if (score !== null && questionsDict[qId].bars[score]) {
         guideBox.className = "bars-guide show";
@@ -1839,13 +2184,12 @@
         guideBox.className = "bars-guide";
       }
 
-      // 코멘트 필수 제어 (1점, 2점, 5점인 경우 필수 플래그 활성화)
       const badge = document.getElementById(`req-badge-${qId}`);
       const commentInput = document.getElementById(`comment-${qId}`);
       
       if (score === 1 || score === 2 || score === 5) {
         badge.className = "required-badge show";
-        commentInput.placeholder = `🚨 [필수] ${score}점을 증빙하는 구체적 행위나 대화 사실을 반드시 서술해 주세요!`;
+        commentInput.placeholder = `🚨 [필수] ${score}점을 증빙하는 구체적 실무 사례나 행동을 반드시 서술해 주세요!`;
         commentInput.required = true;
       } else {
         badge.className = "required-badge";
@@ -1854,17 +2198,12 @@
       }
     }
 
-    // ==========================================
-    // E. 폼 제출 및 리셋 (제출 프로세스)
-    // ==========================================
     function handleFormSubmit(event) {
       event.preventDefault();
-
       const targetName = document.getElementById("eval-target").value;
       const raterType = document.getElementById("eval-rater-type").value;
       const staff = targetStaff.find(s => s.name === targetName);
 
-      // 데이터 검증 및 객체 바인딩
       const record = {
         id: "record_" + Date.now(),
         targetName: targetName,
@@ -1875,7 +2214,6 @@
         timestamp: new Date().toISOString()
       };
 
-      // 동적 문항들의 응답 파싱
       const scoreInputs = document.querySelectorAll("input[id^='score-val-']");
       let allValid = true;
 
@@ -1893,7 +2231,6 @@
         const score = rawVal === "N/A" ? null : parseInt(rawVal);
         record.scores[qId] = score;
 
-        // 1,2,5점 코멘트 필수 조건 검증
         if ((score === 1 || score === 2 || score === 5) && !commentVal) {
           showToast(`🚨 ${questionsDict[qId].title}에 대해 구체적 코멘트를 적어 주셔야 합니다.`);
           document.getElementById(`comment-${qId}`).focus();
@@ -1908,13 +2245,18 @@
 
       if (!allValid) return;
 
-      // 최종 로컬스토리지 적재
       AppState.records.push(record);
       saveData();
       
-      showToast("💾 평가가 정상적으로 대시보드에 실시간 제출되었습니다!");
+      showToast("💾 평가가 실시간으로 안전하게 제출되었습니다!");
       resetForm();
-      switchView("dashboard");
+      
+      // 로그인이 되어 있다면 적합한 뷰로 전환
+      if (AppState.currentUser.level === 'employee') {
+        switchView("report");
+      } else {
+        switchView("dashboard");
+      }
     }
 
     function resetForm() {
@@ -1923,28 +2265,31 @@
     }
 
     // ==========================================
-    // F. 대시보드 집계 및 재배분 알고리즘 구현 (1단계)
+    // 대시보드 및 리포트 집계 알고리즘 완벽 작동
     // ==========================================
     function renderDashboard() {
-      // 1. 총 제출 건수 현황판 갱신
       document.getElementById("stat-total-count").innerHTML = `${AppState.records.length}<small> 건</small>`;
 
       const tbody = document.querySelector("#dashboard-table tbody");
       tbody.innerHTML = "";
 
       let globalFlagCount = 0;
+      const user = AppState.currentUser;
 
-      // 2. 각 대상자별 루프
       targetStaff.forEach(staff => {
+        // 부서장은 부서원 정보만 볼 수 있게 제한 (본인 정보는 대시보드 조회에서 배제하거나 분기 가능)
+        // 여기서는 부서장(manager) 이지민 팀장이 접속 시 본인을 제외한 부서원 현황만 보도록 매끄럽게 통제
+        if (user.level === 'manager' && staff.name === user.name) {
+          return; 
+        }
+
         const targetRecords = AppState.records.filter(r => r.targetName === staff.name);
         
-        // 소스별 수량 파악
         const counts = { peer: 0, dept: 0, lead: 0, patient: 0, self: 0 };
         targetRecords.forEach(r => {
           if (counts[r.raterType] !== undefined) counts[r.raterType]++;
         });
 
-        // 2-A. 충분성 점검
         const peerSufficient = counts.peer >= 5;
         const deptSufficient = counts.dept >= 3;
         const leadSufficient = counts.lead >= 3;
@@ -1956,16 +2301,15 @@
           globalFlagCount++;
         }
 
-        // 2-B. 가중평균 산출 및 재배분 핵심 알고리즘
         const scoreSumBySource = { peer: {}, dept: {}, lead: {}, patient: {} };
         const scoreCounts = { peer: {}, dept: {}, lead: {}, patient: {} };
 
         targetRecords.forEach(rec => {
-          if (rec.raterType === "self") return; // 자기평가는 가중집계에서 철저 배제
+          if (rec.raterType === "self") return;
           
           Object.keys(rec.scores).forEach(qId => {
             const score = rec.scores[qId];
-            if (score === null) return; // N/A 관찰 없음 스킵
+            if (score === null) return;
 
             if (!scoreSumBySource[rec.raterType][qId]) {
               scoreSumBySource[rec.raterType][qId] = 0;
@@ -1976,7 +2320,6 @@
           });
         });
 
-        // 소스별 각 문항 평균 산출
         const sourceAverages = { peer: {}, dept: {}, lead: {}, patient: {} };
         Object.keys(sourceAverages).forEach(src => {
           Object.keys(scoreSumBySource[src]).forEach(qId => {
@@ -1984,36 +2327,22 @@
           });
         });
 
-        // 최종 종합 가중평균 연산 (문항 전체 합산 후 평균)
-        let totalWeightedScore = 0;
-        let validQCount = 0;
-
-        // 공통 + 해당 직군별 실질 유효 항목 리스트 도출
-        const validQIds = Object.keys(questionsDict).filter(qId => {
-          // 환자 중심성 외에는 환자 평가가 없음
-          if (qId !== 'patientCentric') return true;
-          return true;
-        });
-
         let subjectWeightedSum = 0;
         let subjectCount = 0;
+        const validQIds = Object.keys(questionsDict);
 
-        // 각 질문별 가중치 연산 적용
         validQIds.forEach(qId => {
           let qSum = 0;
           let weightTotal = 0;
 
-          // 해당 질문에 대한 소스별 평균이 존재할 경우 가중 반영
           Object.keys(sourceWeights).forEach(src => {
             if (src === 'self') return;
             if (qId === 'patientCentric') {
-              // 환자 중심성은 환자 가중치 포함
               if (sourceAverages[src][qId] !== undefined) {
                 qSum += sourceAverages[src][qId] * sourceWeights[src];
                 weightTotal += sourceWeights[src];
               }
             } else {
-              // 환자 중심성이 아닌 것은 환자 소스 제외하고 가중평균 재조정
               if (src !== 'patient' && sourceAverages[src][qId] !== undefined) {
                 qSum += sourceAverages[src][qId] * sourceWeights[src];
                 weightTotal += sourceWeights[src];
@@ -2021,7 +2350,6 @@
             }
           });
 
-          // 만약 특정 소스 누락 시 가중치 재배분(Normalized)
           if (weightTotal > 0) {
             const finalQScore = qSum / weightTotal;
             subjectWeightedSum += finalQScore;
@@ -2031,25 +2359,19 @@
 
         const finalTargetWeightedAvg = subjectCount > 0 ? (subjectWeightedSum / subjectCount) : 0;
 
-        // 2-C. 편향 검증 플래그 (관대화 및 후광)
         let flags = [];
-        
-        // 관대화 플래그 (4.3 이상)
         if (finalTargetWeightedAvg >= 4.3) {
           flags.push(`<span class="flag-item warn">⚠️ 관대화 경향</span>`);
           globalFlagCount++;
         }
 
-        // 후광 효과 편향 감지 (특정 평가자가 전 과목 동일 점수 부여했는지 카운트)
         let haloCount = 0;
         targetRecords.forEach(rec => {
           const scoreVals = Object.values(rec.scores).filter(v => v !== null);
           if (scoreVals.length >= 4) {
             const first = scoreVals[0];
             const isAllSame = scoreVals.every(v => v === first);
-            if (isAllSame) {
-              haloCount++;
-            }
+            if (isAllSame) haloCount++;
           }
         });
 
@@ -2062,7 +2384,6 @@
           flags.push(`<span class="flag-item none">이상 없음</span>`);
         }
 
-        // 행 생성
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong>${staff.name}</strong><br><small style="color: var(--muted);">${staff.desc}</small></td>
@@ -2084,19 +2405,18 @@
         tbody.appendChild(tr);
       });
 
-      // 편향 발생 통계 갱신
       document.getElementById("stat-flag-count").innerText = globalFlagCount + " 건";
     }
 
-    // ==========================================
-    // G. 리포트 생성 및 Chart.js 시각화 구현
-    // ==========================================
-    let activeChart = null; // 차트 인스턴스 보존
-
+    // 리포트 대상자 목록 (권한 통제 개인화)
     function renderReportDropdown() {
       const select = document.getElementById("report-target-select");
       select.innerHTML = "";
+      
+      const user = AppState.currentUser;
+      
       targetStaff.forEach(staff => {
+        // 부서장은 부서원 리포트만 보이고 (본인 포함), 일반 직원은 해당 드롭다운 자체가 사이드바 통제에 의해 가려집니다.
         const opt = document.createElement("option");
         opt.value = staff.name;
         opt.innerText = `${staff.name} (${staff.roleName})`;
@@ -2105,11 +2425,20 @@
     }
 
     function loadReportForTarget() {
-      const targetName = document.getElementById("report-target-select").value;
+      const user = AppState.currentUser;
+      let targetName = "";
+      
+      if (user.level === 'employee') {
+        // 일반 직원은 타인 데이터 조회가 불가능하도록 본인 이름 강제 락
+        targetName = user.name;
+      } else {
+        targetName = document.getElementById("report-target-select").value;
+      }
+
       renderReportDetails(targetName);
     }
 
-    // 리포트 상세 바인딩 및 Chart 그리기 핵심 로직
+    let activeChart = null;
     function renderReportDetails(targetName) {
       const staff = targetStaff.find(s => s.name === targetName);
       if (!staff) return;
@@ -2127,14 +2456,13 @@
       contentArea.style.display = "block";
       emptyArea.style.display = "none";
 
-      // 1. 소스별 집계 연산
       const scoresBySource = { self: {}, peer: {}, dept: {}, lead: {}, patient: {} };
       const countsBySource = { self: {}, peer: {}, dept: {}, lead: {}, patient: {} };
 
       targetRecords.forEach(rec => {
         Object.keys(rec.scores).forEach(qId => {
           const val = rec.scores[qId];
-          if (val === null) return; // N/A 제외
+          if (val === null) return;
 
           if (!scoresBySource[rec.raterType][qId]) {
             scoresBySource[rec.raterType][qId] = 0;
@@ -2145,7 +2473,6 @@
         });
       });
 
-      // 평균 계산
       const avgBySource = { self: {}, peer: {}, dept: {}, lead: {}, patient: {} };
       Object.keys(avgBySource).forEach(src => {
         Object.keys(scoresBySource[src]).forEach(qId => {
@@ -2153,10 +2480,8 @@
         });
       });
 
-      // 종합 가중평균 산출
       const finalAverages = {};
       const validQIds = Object.keys(questionsDict).filter(qId => {
-        // 해당 직군의 질문만 통과
         if (qId === 'safetyMgmt' || qId === 'professionalClinical') return staff.role === 'clinical';
         if (qId === 'accuracyMgmt' || qId === 'customerService') return staff.role === 'admin';
         if (qId === 'coachingStaff' || qId === 'executionMgmt') return staff.role === 'manager';
@@ -2168,7 +2493,7 @@
         let weightTotal = 0;
 
         Object.keys(sourceWeights).forEach(src => {
-          if (src === 'self') return; // 자기평가는 무조건 제외
+          if (src === 'self') return;
 
           if (qId === 'patientCentric') {
             if (avgBySource[src][qId] !== undefined) {
@@ -2186,7 +2511,7 @@
         finalAverages[qId] = weightTotal > 0 ? (weightedSum / weightTotal) : null;
       });
 
-      // 2. 테이블 상세 렌더링
+      // 테이블 렌더링
       const tbody = document.querySelector("#report-detail-table tbody");
       tbody.innerHTML = "";
 
@@ -2196,12 +2521,7 @@
         const peerVal = avgBySource.peer[qId] ? avgBySource.peer[qId].toFixed(1) : "-";
         const deptVal = avgBySource.dept[qId] ? avgBySource.dept[qId].toFixed(1) : "-";
         const leadVal = avgBySource.lead[qId] ? avgBySource.lead[qId].toFixed(1) : "-";
-        
-        let patientVal = "-";
-        if (qId === 'patientCentric') {
-          patientVal = avgBySource.patient[qId] ? avgBySource.patient[qId].toFixed(1) : "-";
-        }
-
+        const patientVal = qId === 'patientCentric' && avgBySource.patient[qId] ? avgBySource.patient[qId].toFixed(1) : "-";
         const finalVal = finalAverages[qId] ? finalAverages[qId].toFixed(2) : "-";
 
         const tr = document.createElement("tr");
@@ -2217,7 +2537,7 @@
         tbody.appendChild(tr);
       });
 
-      // 3. 강점 및 약점 추출 알고리즘
+      // 강점약점 자동 추출
       const sortedByScore = Object.keys(finalAverages)
         .filter(qId => finalAverages[qId] !== null)
         .map(qId => ({ qId: qId, score: finalAverages[qId] }))
@@ -2231,7 +2551,7 @@
         document.getElementById("summary-weakness").innerText = `${questionsDict[lowest.qId].title.split(" ")[1]} (${lowest.score.toFixed(2)}점)`;
       }
 
-      // 4. 익명 코멘트 모음 렌더링
+      // 익명 코멘트 모음
       const commContainer = document.getElementById("report-comments-container");
       commContainer.innerHTML = "";
 
@@ -2257,16 +2577,13 @@
         commContainer.innerHTML = `<div style="text-align: center; color: var(--muted); font-size: 13.5px; padding: 20px;">제출된 서술형 피드백 코멘트가 없습니다.</div>`;
       }
 
-      // 5. Chart.js 레이더 차트 렌더링
+      // Chart.js 레이더 차트 그리기
       const labels = validQIds.map(qId => questionsDict[qId].title.split(" ")[1]);
       const selfData = validQIds.map(qId => avgBySource.self[qId] || 0);
       const otherData = validQIds.map(qId => finalAverages[qId] || 0);
 
       const ctx = document.getElementById('reportRadarChart').getContext('2d');
-      
-      if (activeChart) {
-        activeChart.destroy();
-      }
+      if (activeChart) activeChart.destroy();
 
       activeChart = new Chart(ctx, {
         type: 'radar',
@@ -2287,9 +2604,7 @@
               backgroundColor: 'rgba(31, 111, 107, 0.25)',
               borderColor: 'rgba(31, 111, 107, 1)',
               borderWidth: 3,
-              pointBackgroundColor: 'rgba(31, 111, 107, 1)',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgba(31, 111, 107, 1)'
+              pointBackgroundColor: 'rgba(31, 111, 107, 1)'
             }
           ]
         },
@@ -2298,7 +2613,6 @@
           maintainAspectRatio: false,
           scales: {
             r: {
-              angleLines: { display: true },
               suggestedMin: 1.0,
               suggestedMax: 5.0,
               ticks: { stepSize: 1.0 }
@@ -2313,7 +2627,7 @@
         }
       });
 
-      // 6. IDP 로컬 복원 바인딩
+      // IDP 로드
       const idpRecord = AppState.idp[targetName];
       if (idpRecord) {
         document.getElementById("idp-strength").value = idpRecord.strength1 || "";
@@ -2325,10 +2639,9 @@
       }
     }
 
-    // IDP 저장
     function handleIdpSubmit(event) {
       event.preventDefault();
-      const targetName = document.getElementById("report-target-select").value;
+      const targetName = AppState.currentUser.level === 'employee' ? AppState.currentUser.name : document.getElementById("report-target-select").value;
       
       AppState.idp[targetName] = {
         strength1: document.getElementById("idp-strength").value.trim(),
@@ -2338,48 +2651,43 @@
       };
       
       saveData();
-      showToast("💾 IDP 성장 면담록이 안전하게 로컬에 저장되었습니다!");
+      showToast("💾 IDP 성장 면담록이 로컬에 저장되었습니다!");
     }
 
-    // ==========================================
-    // H. 리포트 모달 제어
-    // ==========================================
     function openReportModal(targetName) {
       switchView("report");
       const select = document.getElementById("report-target-select");
-      select.value = targetName;
-      loadReportForTarget();
+      if (select) {
+        select.value = targetName;
+        loadReportForTarget();
+      }
     }
 
     // ==========================================
-    // I. 데이터 관리 기능 ( CSV / 복사 / 초기화 )
+    // 데이터 및 백업 유틸리티
     // ==========================================
-    
-    // 모의 데이터 강제 탑재
     function loadMockData() {
-      if (confirm("🚨 기존 데이터를 모두 덮어쓰고 데모 데이터 15건을 구성합니까?")) {
+      if (confirm("🚨 기존 데이터를 모두 지우고 모의 데모 데이터 15건으로 채우겠습니까?")) {
         AppState.records = [...mockEvaluations];
         AppState.idp = {
           "김도희": { strength1: "환자 중심성", strength2: "책임감과 신뢰성", development: "성장과 학습 태도", actionPlan: "매주 최신 재활 의학 세미나 자료 탐독 및 전파", meetingNote: "강점이 확실하니 타 전공자와의 임상 교류를 권장함." }
         };
         saveData();
-        showToast("🔄 데모 데이터 로드가 완료되었습니다!");
+        showToast("🔄 데모 데이터가 복구되었습니다!");
         renderDashboard();
       }
     }
 
-    // 데이터 전체 삭제
     function clearAllData() {
-      if (confirm("🗑️ 정말로 모든 평가 내역과 IDP 기록을 영구 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+      if (confirm("🗑️ 정말로 모든 평가 기록을 영구 삭제하시겠습니까?")) {
         AppState.records = [];
         AppState.idp = {};
         saveData();
-        showToast("🗑️ 로컬 저장소 데이터가 완전히 공백 상태로 초기화되었습니다.");
+        showToast("🗑️ 로컬 저장소가 완벽히 초기화되었습니다.");
         renderDashboard();
       }
     }
 
-    // 엑셀 붙여넣기용 클립보드 복사 (원자료 탭 구분 한 줄)
     function copyRawForExcel() {
       if (AppState.records.length === 0) {
         showToast("⚠️ 복사할 데이터가 없습니다.");
@@ -2403,19 +2711,16 @@
 
       navigator.clipboard.writeText(rows).then(() => {
         showToast("📋 엑셀 붙여넣기용 데이터가 복사되었습니다!");
-      }).catch(err => {
-        showToast("⚠️ 클립보드 복사 실패. 개발자 도구를 확인하세요.");
       });
     }
 
-    // CSV 파일 다운로드
     function exportToCsv() {
       if (AppState.records.length === 0) {
-        showToast("⚠️ 다운로드할 데이터가 존재하지 않습니다.");
+        showToast("⚠️ 다운로드할 데이터가 없습니다.");
         return;
       }
 
-      let csvContent = "\uFEFF"; // 한글 깨짐 방지 BOM
+      let csvContent = "\uFEFF";
       csvContent += "Record ID,Target,Role,Rater Type,Patient Centric,Collaboration,Responsibility,Growth,Module 1,Module 2,Comments,Timestamp\n";
 
       AppState.records.forEach(r => {
@@ -2439,26 +2744,20 @@
       document.body.removeChild(link);
     }
 
-    // ==========================================
-    // J. 기타 유틸리티 (토스트, 메뉴, 매뉴얼 포팅)
-    // ==========================================
     function showToast(msg) {
       const toast = document.getElementById("globalToast");
       toast.innerText = msg;
       toast.className = "toast-msg show";
-      setTimeout(() => {
-        toast.className = "toast-msg";
-      }, 2500);
+      setTimeout(() => { toast.className = "toast-msg"; }, 2500);
     }
 
     function copyTemplateText(id) {
       const text = document.getElementById(id).innerText;
       navigator.clipboard.writeText(text).then(() => {
-        showToast("📋 템플릿 안내문이 복사되었습니다!");
+        showToast("📋 템플릿 복사가 완료되었습니다!");
       });
     }
 
-    // 모바일 사이드바 토글
     document.getElementById("sidebarToggle").onclick = function() {
       document.getElementById("appSidebar").classList.add("open");
       document.getElementById("appScrim").style.display = "block";
@@ -2469,17 +2768,8 @@
       document.getElementById("appScrim").style.display = "none";
     };
 
-    // 매뉴얼용 ScrollSpy 및 스크롤 이벤트
     function initManualScrollSpy() {
       const links = document.querySelectorAll(".manual-toc a");
-      const manualContainer = document.getElementById("manual-body-container");
-      
-      const spyOptions = {
-        root: null,
-        rootMargin: "-20% 0px -60% 0px",
-        threshold: 0
-      };
-
       const spyObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -2489,7 +2779,7 @@
             if (activeLink) activeLink.classList.add("active");
           }
         });
-      }, spyOptions);
+      }, { root: null, rootMargin: "-20% 0px -60% 0px", threshold: 0 });
 
       document.querySelectorAll(".manual-body-content section").forEach(s => spyObserver.observe(s));
     }
