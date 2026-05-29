@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>다면평가 실무 운영 매뉴얼</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+:root{
+  --teal:#1F6F6B;--teal-d:#143f3c;--teal-l:#E3F0EE;--teal-l2:#f1f7f6;
+  --ink:#15201e;--body:#33403d;--muted:#71807c;--line:#e3eae8;--line-d:#cdd9d6;
+  --bg:#f6f8f7;--card:#fff;--warn:#9a5b00;--warn-bg:#fff7ea;--gold:#b9892b;
+  --hr:#2563a8;--mgr:#9a4d8a;--rater:#1F6F6B;
+  --maxw:900px;--nav:266px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Pretendard','Malgun Gothic',system-ui,sans-serif;color:var(--body);
+  line-height:1.7;background:var(--bg);-webkit-font-smoothing:antialiased;font-size:15.5px}
+a{color:inherit;text-decoration:none}
+.layout{display:grid;grid-template-columns:var(--nav) 1fr;max-width:1260px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:28px 18px 40px;
+  border-right:1px solid var(--line);background:#fbfdfc}
+.brand{font-size:11.5px;font-weight:800;letter-spacing:.13em;color:var(--teal);text-transform:uppercase}
+.brandt{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.35;margin:4px 0 18px}
+.toc ul{list-style:none}
+.toc a{display:block;font-size:13.5px;color:var(--muted);padding:6px 11px;border-radius:8px;
+  border-left:2px solid transparent;transition:.13s}
+.toc a:hover{color:var(--teal);background:var(--teal-l2)}
+.toc a.active{color:var(--teal-d);background:var(--teal-l);font-weight:700;border-left-color:var(--teal)}
+.toc .ap{font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--line-d);text-transform:uppercase;margin:16px 0 6px 11px}
+.inner{max-width:var(--maxw);margin:0 auto;padding:42px 40px 120px}
+.hero{background:linear-gradient(135deg,var(--teal-d),var(--teal));border-radius:20px;padding:34px 34px 30px;color:#eafffb;margin-bottom:34px;box-shadow:0 14px 40px rgba(20,63,60,.22)}
+.hero .k{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#a9ded6}
+.hero h1{font-size:31px;font-weight:800;letter-spacing:-.02em;color:#fff;margin:8px 0 10px;line-height:1.18}
+.hero p{color:#cdeae5;font-size:14.5px;max-width:600px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.hero .tag{font-size:12px;font-weight:600;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:5px 12px;border-radius:999px}
+section{margin-bottom:46px;scroll-margin-top:20px}
+h2{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em;display:flex;align-items:center;gap:11px;margin-bottom:4px}
+h2 .no{flex:0 0 auto;font-size:13px;font-weight:800;color:#fff;background:var(--teal);border-radius:9px;width:30px;height:30px;display:grid;place-items:center}
+.lead{color:var(--muted);font-size:14px;margin:6px 0 18px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;font-weight:800;color:var(--teal-d);margin:24px 0 10px}
+h4{font-size:14.5px;font-weight:800;color:var(--ink);margin:14px 0 6px}
+p{margin:0 0 12px}
+ul.disc,ol.dec{margin:0 0 14px;padding-left:22px}
+ul.disc li,ol.dec li{margin-bottom:6px}
+ul.disc li::marker{color:var(--teal)}
+strong{font-weight:700;color:var(--ink)}
+.tw{overflow-x:auto;margin:12px 0 16px;border:1px solid var(--line);border-radius:13px}
+table{border-collapse:collapse;width:100%;font-size:13.8px;background:var(--card);min-width:480px}
+thead th{background:var(--teal);color:#fff;font-weight:700;text-align:left;padding:10px 13px;font-size:13px}
+tbody td{padding:9px 13px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:var(--teal-l2)}
+td.c,th.c{text-align:center}td.s{font-weight:800;color:var(--teal);text-align:center;width:42px}
+/* at-a-glance cards */
+.glance{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:6px 0 8px}
+@media(max-width:640px){.glance{grid-template-columns:repeat(2,1fr)}}
+.gc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px}
+.gc .l{font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+.gc .v{font-size:22px;font-weight:800;color:var(--teal-d);margin-top:3px;letter-spacing:-.02em}
+.gc .v small{font-size:13px;font-weight:600;color:var(--muted)}
+/* role cards */
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:760px){.roles{grid-template-columns:1fr}}
+.role{border:1px solid var(--line);border-radius:15px;padding:18px;background:var(--card);border-top:4px solid var(--teal)}
+.role.hr{border-top-color:var(--hr)}.role.mgr{border-top-color:var(--mgr)}.role.rater{border-top-color:var(--rater)}
+.role .rt{font-size:15.5px;font-weight:800;color:var(--ink)}
+.role .rs{font-size:12px;color:var(--muted);margin:2px 0 10px}
+.role ul{list-style:none;font-size:13.5px}
+.role li{padding:5px 0 5px 18px;position:relative}
+.role li::before{content:"";position:absolute;left:0;top:11px;width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.role.hr li::before{background:var(--hr)}.role.mgr li::before{background:var(--mgr)}
+/* timeline */
+.phase{display:flex;gap:16px;margin:0 0 4px;padding:16px 0;border-top:1px solid var(--line)}
+.phase:first-child{border-top:none}
+.phase .when{flex:0 0 86px;text-align:center}
+.phase .when .b{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--teal);border-radius:999px;padding:4px 11px}
+.phase .when .who{font-size:11.5px;color:var(--muted);margin-top:6px;font-weight:600}
+.phase .body2{flex:1}
+.phase .pt{font-size:15.5px;font-weight:800;color:var(--ink)}
+.phase .pd{font-size:13.8px;color:var(--body);margin-top:3px}
+/* steps */
+.step{display:flex;gap:14px;margin-bottom:14px}
+.step .n{flex:0 0 30px;width:30px;height:30px;border-radius:9px;background:var(--teal-l);color:var(--teal-d);
+  font-weight:800;font-size:14px;display:grid;place-items:center;border:1px solid #cfe5e1}
+.step .sc{font-size:14.3px}
+.step .sc b{color:var(--ink)}
+/* checklist */
+.chk{list-style:none;margin:12px 0;background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.chk li{display:flex;gap:11px;align-items:flex-start;padding:11px 15px;border-top:1px solid var(--line);font-size:14px}
+.chk li:first-child{border-top:none}
+.chk .bx{flex:0 0 17px;width:17px;height:17px;border:2px solid var(--teal);border-radius:5px;margin-top:3px}
+.chk .ct{font-size:11.5px;font-weight:800;letter-spacing:.06em;color:var(--teal);background:var(--teal-l);padding:8px 15px;text-transform:uppercase}
+/* callout */
+.box{border-radius:13px;padding:15px 17px;margin:14px 0;font-size:14px}
+.box.tip{background:var(--teal-l2);border:1px solid #d4e6e2}
+.box.warn{background:var(--warn-bg);border:1px solid #f0d9af;color:#5c4413}
+.box .bt{font-weight:800;display:block;margin-bottom:4px;color:var(--ink)}
+.box.warn .bt{color:var(--warn)}
+/* template copy */
+.tpl{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin:14px 0;background:var(--card)}
+.tpl .th{display:flex;justify-content:space-between;align-items:center;background:#f3f7f6;padding:10px 15px;border-bottom:1px solid var(--line)}
+.tpl .th b{font-size:13.5px;color:var(--ink)}
+.tpl .cp{font:inherit;font-size:12.5px;font-weight:700;color:var(--teal-d);background:#fff;border:1px solid var(--line-d);
+  border-radius:8px;padding:5px 12px;cursor:pointer;transition:.13s}
+.tpl .cp:hover{background:var(--teal);color:#fff;border-color:var(--teal)}
+.tpl .bd{padding:14px 16px;font-size:13.8px;white-space:pre-wrap;color:var(--body);line-height:1.65}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:14px 0}
+.fnode{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.fnode .fn{font-size:11.5px;font-weight:800;color:var(--teal);letter-spacing:.04em}
+.fnode .fd{font-size:13.5px;margin-top:3px}
+.farrow{flex:0 0 28px;display:grid;place-items:center;color:var(--line-d);font-size:20px;font-weight:800}
+@media(max-width:640px){.farrow{transform:rotate(90deg)}}
+.mbar{display:none}
+@media(max-width:920px){
+  .layout{grid-template-columns:1fr}
+  nav.toc{position:fixed;z-index:40;top:0;left:0;width:280px;transform:translateX(-100%);transition:.25s;box-shadow:0 0 40px rgba(0,0,0,.18)}
+  nav.toc.open{transform:none}
+  .mbar{display:flex;position:sticky;top:0;z-index:30;align-items:center;gap:12px;background:rgba(251,253,252,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 18px}
+  .mbar button{font:inherit;font-weight:800;font-size:14px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 13px;color:var(--teal-d);cursor:pointer}
+  .mbar .mt{font-size:13px;font-weight:800;color:var(--ink)}
+  .inner{padding:24px 18px 100px}.hero h1{font-size:25px}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(10,20,18,.4);z-index:35}.scrim.show{display:block}
+}
+@media print{nav.toc,.mbar,.tpl .cp{display:none}.layout{display:block}.inner{max-width:100%;padding:0}
+  section{page-break-inside:avoid}.hero{box-shadow:none}body{background:#fff;font-size:11pt}}
+.foot{margin-top:54px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+  padding:11px 20px;border-radius:11px;font-size:14px;font-weight:600;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="toc" id="toc">
+    <div class="brand">360° Operations</div>
+    <div class="brandt">다면평가<br>실무 운영 매뉴얼</div>
+    <ul>
+      <li><a href="#s1">1. 한눈에 보기</a></li>
+      <li><a href="#s2">2. 역할과 책임</a></li>
+      <li><a href="#s3">3. 운영 일정</a></li>
+      <li><a href="#s4">4. 단계별 실무 절차</a></li>
+      <li><a href="#s5">5. 도구 사용법</a></li>
+      <li><a href="#s6">6. 평가 기준 요약</a></li>
+      <li><a href="#s7">7. 예외 상황 처리</a></li>
+      <li><a href="#s8">8. 커뮤니케이션 템플릿</a></li>
+      <div class="ap">부록</div>
+      <li><a href="#a1">A. 단계별 체크리스트</a></li>
+    </ul>
+  </nav>
+  <div class="scrim" id="scrim"></div>
+
+  <main>
+    <div class="mbar"><button id="menuBtn">목차 ☰</button><span class="mt">다면평가 실무 운영 매뉴얼</span></div>
+    <div class="inner">
+
+      <div class="hero">
+        <div class="k">360° Feedback · Operations Manual</div>
+        <h1>다면평가 실무 운영 매뉴얼</h1>
+        <p>설계된 다면평가를 현장에서 실제로 운영하기 위한 실무 안내서입니다. 누가·언제·무엇을 하는지, 도구를 어떻게 쓰는지, 예외 상황은 어떻게 처리하는지를 순서대로 정리했습니다.</p>
+        <div class="meta">
+          <span class="tag">대상: 인사 담당자 · 관리자 · 평가자</span>
+          <span class="tag">운영 주기: 연 1회</span>
+          <span class="tag">소요: 약 8주 + 후속 점검</span>
+        </div>
+      </div>
+
+      <!-- 1 -->
+      <section id="s1">
+        <h2><span class="no">1</span>한눈에 보기</h2>
+        <p class="lead">이 평가가 무엇인지 30초 안에 파악합니다.</p>
+        <div class="glance">
+          <div class="gc"><div class="l">평가 방식</div><div class="v">360°<small> 다면</small></div></div>
+          <div class="gc"><div class="l">척도</div><div class="v">5점<small> BARS</small></div></div>
+          <div class="gc"><div class="l">측정 항목</div><div class="v">6<small> 공통4+모듈2</small></div></div>
+          <div class="gc"><div class="l">운영 기간</div><div class="v">8<small> 주</small></div></div>
+        </div>
+        <h3>목적</h3>
+        <p>구성원의 핵심 역량을 여러 관점에서 측정하여 <strong>개인의 성장을 지원</strong>합니다. 본 평가는 성장 지원용(개발 트랙)이며, 서열화나 징벌 목적으로 사용하지 않습니다.</p>
+        <h3>측정 소스와 가중</h3>
+        <div class="tw"><table>
+          <thead><tr><th>소스</th><th class="c">최소 인원</th><th class="c">가중</th><th>역할</th></tr></thead>
+          <tbody>
+            <tr><td>동료</td><td class="c">5</td><td class="c">35%</td><td>일상 협업 관찰</td></tr>
+            <tr><td>타직종·타부서</td><td class="c">3</td><td class="c">25%</td><td>협진 접점 관찰</td></tr>
+            <tr><td>관리자</td><td class="c">3</td><td class="c">25%</td><td>업무 전반 관찰</td></tr>
+            <tr><td>환자/객관지표</td><td class="c">—</td><td class="c">15%</td><td>환자 중심성 보강</td></tr>
+            <tr><td>본인(자기평가)</td><td class="c">1</td><td class="c">참고</td><td>자기–타인 인식차</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <!-- 2 -->
+      <section id="s2">
+        <h2><span class="no">2</span>역할과 책임</h2>
+        <p class="lead">세 주체가 각자 무엇을 하는지 분명히 합니다.</p>
+        <div class="roles">
+          <div class="role hr">
+            <div class="rt">인사 담당자</div>
+            <div class="rs">설계·집계·리포트 총괄</div>
+            <ul>
+              <li>항목·척도·일정 확정</li>
+              <li>평가자 배정·교육</li>
+              <li>웹 양식 배포, 응답 취합</li>
+              <li>집계·품질 점검</li>
+              <li>리포트 생성·전달</li>
+            </ul>
+          </div>
+          <div class="role mgr">
+            <div class="rt">관리자(부서장)</div>
+            <div class="rs">평가·면담 수행</div>
+            <ul>
+              <li>평가자 후보 추천</li>
+              <li>관리자 소스 평가</li>
+              <li>결과 피드백 면담</li>
+              <li>IDP 수립·점검</li>
+            </ul>
+          </div>
+          <div class="role rater">
+            <div class="rt">평가자</div>
+            <div class="rs">관찰 기반 평가</div>
+            <ul>
+              <li>BARS 기준 숙지</li>
+              <li>관찰 사실로 점수 부여</li>
+              <li>극단 점수 시 코멘트</li>
+              <li>미관찰 항목은 ‘관찰 없음’</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section id="s3">
+        <h2><span class="no">3</span>운영 일정</h2>
+        <p class="lead">D-day(평가 마감)를 기준으로 한 8주 흐름입니다.</p>
+        <div>
+          <div class="phase"><div class="when"><span class="b">D-8주</span><div class="who">인사</div></div>
+            <div class="body2"><div class="pt">① 설계·항목 확정</div><div class="pd">대상자·직군 모듈·소스 가중·일정을 확정하고 경영진·직군대표와 합의한다.</div></div></div>
+          <div class="phase"><div class="when"><span class="b">D-6주</span><div class="who">인사·부서장</div></div>
+            <div class="body2"><div class="pt">② 평가자 배정·교육</div><div class="pd">소스별 최소 인원을 채워 배정하고, 평가자 기준 일치 교육을 진행한다.</div></div></div>
+          <div class="phase"><div class="when"><span class="b">D-4~2주</span><div class="who">평가자</div></div>
+            <div class="body2"><div class="pt">③ 평가 실시</div><div class="pd">웹 입력 양식으로 점수와 코멘트를 받는다. 마감 3일 전 미응답자에게 리마인드.</div></div></div>
+          <div class="phase"><div class="when"><span class="b">D-1주</span><div class="who">인사</div></div>
+            <div class="body2"><div class="pt">④ 집계·품질점검</div><div class="pd">집계 시트로 가중평균·편차·분포를 산출하고 후광·관대화·충분성을 점검한다.</div></div></div>
+          <div class="phase"><div class="when"><span class="b">D-day</span><div class="who">인사</div></div>
+            <div class="body2"><div class="pt">⑤ 리포트 생성</div><div class="pd">강점 2 + 우선 개발영역 1을 정리하고 IDP 연결 자료를 만든다.</div></div></div>
+          <div class="phase"><div class="when"><span class="b">D+2주</span><div class="who">관리자</div></div>
+            <div class="body2"><div class="pt">⑥ 피드백 면담</div><div class="pd">결과를 성장 관점으로 공유하고 IDP를 함께 수립한다.</div></div></div>
+          <div class="phase"><div class="when"><span class="b">+6개월</span><div class="who">관리자·인사</div></div>
+            <div class="body2"><div class="pt">⑦ 중간 점검</div><div class="pd">IDP 이행 정도를 점검하고 필요 시 지원을 조정한다.</div></div></div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section id="s4">
+        <h2><span class="no">4</span>단계별 실무 절차</h2>
+        <p class="lead">각 단계에서 실제로 손으로 하는 일을 순서대로 적었습니다.</p>
+
+        <h3>4.1 설계·항목 확정 (D-8주)</h3>
+        <div class="step"><div class="n">1</div><div class="sc"><b>대상자 명단 확정</b> — 평가 대상자와 각자의 직군(임상/행정/관리자)을 정리한다.</div></div>
+        <div class="step"><div class="n">2</div><div class="sc"><b>직군 모듈 선택</b> — 직군별 모듈 2개를 고른다(임상직은 3개 중 2개 선택).</div></div>
+        <div class="step"><div class="n">3</div><div class="sc"><b>가중·임계값 확인</b> — 소스 가중(35/25/25/15)과 관대화 임계값(4.3)을 기관 상황에 맞게 점검한다.</div></div>
+        <div class="step"><div class="n">4</div><div class="sc"><b>일정 공지</b> — 전 직원에게 목적·일정·비공개 원칙을 사전 공지한다(템플릿 8장).</div></div>
+
+        <h3>4.2 평가자 배정·교육 (D-6주)</h3>
+        <div class="step"><div class="n">1</div><div class="sc"><b>평가자 배정</b> — 대상자 1인당 동료 ≥5, 타직종 ≥3, 관리자 ≥3을 배정한다. 협진 접점자를 우선한다.</div></div>
+        <div class="step"><div class="n">2</div><div class="sc"><b>익명성 확인</b> — 소스별 인원이 최소치 미만이면 통합하거나 기명 코멘트로 전환한다(7장).</div></div>
+        <div class="step"><div class="n">3</div><div class="sc"><b>평가자 교육</b> — 항목 정의·BARS·평가 오류를 사례로 안내한다. <b>‘3점=기대 충족(정상)’</b>을 강조한다.</div></div>
+
+        <h3>4.3 평가 실시 (D-4~2주)</h3>
+        <div class="step"><div class="n">1</div><div class="sc"><b>웹 양식 배포</b> — 평가자에게 입력 양식 링크와 대상자·평가자 번호를 안내한다.</div></div>
+        <div class="step"><div class="n">2</div><div class="sc"><b>응답 취합</b> — 평가자가 생성한 줄을 집계 시트에 붙여넣는다(5장 참조).</div></div>
+        <div class="step"><div class="n">3</div><div class="sc"><b>리마인드</b> — 마감 3일 전 미응답자에게 1회 안내한다(템플릿 8장).</div></div>
+
+        <h3>4.4 집계·품질점검 (D-1주)</h3>
+        <div class="step"><div class="n">1</div><div class="sc"><b>자동 산출 확인</b> — 집계 시트에서 소스별 평균·가중평균·표준편차·분포가 채워졌는지 본다.</div></div>
+        <div class="step"><div class="n">2</div><div class="sc"><b>충분성 점검</b> — ‘평가자 수 충분성’에서 소스별 인원이 ‘충족’인지 확인한다.</div></div>
+        <div class="step"><div class="n">3</div><div class="sc"><b>편향 점검</b> — 관대화(전체 ≥4.3)와 후광(동일점수) 플래그를 확인하고 필요 시 보완한다.</div></div>
+        <div class="step"><div class="n">4</div><div class="sc"><b>자기평가 입력</b> — 본인 점수를 입력해 자기–타인 인식차를 확인한다.</div></div>
+
+        <h3>4.5 리포트·면담 (D-day ~ D+2주)</h3>
+        <div class="step"><div class="n">1</div><div class="sc"><b>리포트 정리</b> — 응답률·소스별 N·항목별 평균/편차, 강점 2 + 개발영역 1을 정리한다.</div></div>
+        <div class="step"><div class="n">2</div><div class="sc"><b>면담</b> — 관리자가 성장 관점으로 결과를 공유하고 IDP를 함께 만든다.</div></div>
+        <div class="step"><div class="n">3</div><div class="sc"><b>기록·보관</b> — 개인정보 보존 기간에 따라 보관하고 만료 시 파기한다.</div></div>
+      </section>
+
+      <!-- 5 -->
+      <section id="s5">
+        <h2><span class="no">5</span>도구 사용법</h2>
+        <p class="lead">웹 입력 양식과 집계 시트가 어떻게 연결되는지 보여 줍니다.</p>
+        <div class="flow">
+          <div class="fnode"><div class="fn">STEP 1</div><div class="fd">평가자: 웹 양식에서 점수·코멘트 입력 후 ‘결과 생성’</div></div>
+          <div class="farrow">→</div>
+          <div class="fnode"><div class="fn">STEP 2</div><div class="fd">‘시트 붙여넣기용 복사’ 클릭(탭 구분 한 줄 복사)</div></div>
+          <div class="farrow">→</div>
+          <div class="fnode"><div class="fn">STEP 3</div><div class="fd">집계 Excel [원자료입력] 빈 행 A열에 붙여넣기</div></div>
+          <div class="farrow">→</div>
+          <div class="fnode"><div class="fn">STEP 4</div><div class="fd">[집계] 시트에서 가중평균·편차·점검 자동 산출</div></div>
+        </div>
+
+        <h4>웹 입력 양식</h4>
+        <ul class="disc">
+          <li>평가자 구분(동료/타직종/관리자/환자)과 대상자 직군을 먼저 선택한다.</li>
+          <li>‘환자·보호자’를 선택하면 <strong>환자 중심성 항목만</strong> 표시된다.</li>
+          <li>점수를 누르면 해당 BARS 기준이 표시된다. 미관찰 항목은 ‘관찰 기회 없음’.</li>
+          <li>5점 또는 1·2점은 코멘트 입력이 필수다.</li>
+        </ul>
+
+        <h4>집계 시트</h4>
+        <ul class="disc">
+          <li>노란 칸(자기평가)만 입력하면 나머지는 자동 계산된다.</li>
+          <li>특정 소스 응답이 없으면 그 소스를 빼고 남은 가중치로 자동 재배분된다.</li>
+          <li>‘충분성·편향 점검’ 블록에서 미달·플래그를 한눈에 확인한다.</li>
+        </ul>
+        <div class="box tip"><span class="bt">팁</span>샘플 데이터로 동작을 먼저 확인한 뒤, 실제 입력 시 [원자료입력] 시트의 샘플 행을 지우고 사용한다.</div>
+      </section>
+
+      <!-- 6 -->
+      <section id="s6">
+        <h2><span class="no">6</span>평가 기준 요약</h2>
+        <p class="lead">평가자가 자주 들여다볼 핵심 기준만 모았습니다.</p>
+
+        <h3>측정 항목</h3>
+        <div class="tw"><table>
+          <thead><tr><th style="width:170px">항목</th><th>무엇을 보는가</th></tr></thead>
+          <tbody>
+            <tr><td>환자 중심성</td><td>환자를 존중하고 환자 입장에서 최선의 경험을 제공하려 노력하는가</td></tr>
+            <tr><td>협업과 소통</td><td>팀·타직종과 정보를 공유하고 존중하며 소통하여 협진에 기여하는가</td></tr>
+            <tr><td>책임감과 신뢰성</td><td>맡은 일을 기한 내 끝까지 완수하고 약속을 지키는가</td></tr>
+            <tr><td>성장과 학습 태도</td><td>피드백을 수용하고 스스로 학습하여 발전하려 노력하는가</td></tr>
+            <tr><td>직군 모듈 2개</td><td>직군 특성 항목(임상: 안전·협진 등 / 행정: 정확성·서비스 / 관리자: 코칭·실행)</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>5점 척도</h3>
+        <div class="tw"><table>
+          <thead><tr><th class="c" style="width:56px">점수</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td class="s">5</td><td>매우 우수 — 기대를 크게 상회하며 모범이 됨</td></tr>
+            <tr><td class="s">4</td><td>우수 — 기대 충족 및 일부 상회</td></tr>
+            <tr><td class="s">3</td><td>기대 충족(정상)</td></tr>
+            <tr><td class="s">2</td><td>개선 필요</td></tr>
+            <tr><td class="s">1</td><td>상당한 개선 필요</td></tr>
+          </tbody>
+        </table></div>
+        <div class="box warn"><span class="bt">평가 3원칙</span><b>① 관찰한 사실로</b> 평가합니다. <b>② 모르면 ‘관찰 없음’</b>을 선택합니다. <b>③ 5점·1·2점에는 코멘트</b>를 남깁니다.</div>
+      </section>
+
+      <!-- 7 -->
+      <section id="s7">
+        <h2><span class="no">7</span>예외 상황 처리</h2>
+        <p class="lead">자주 생기는 문제와 처리 기준입니다.</p>
+        <div class="tw"><table>
+          <thead><tr><th style="width:200px">상황</th><th>처리</th></tr></thead>
+          <tbody>
+            <tr><td>관리자가 3명 미만</td><td>관리자 점수 대신 기명 코멘트로 전환하거나 ‘리더 그룹’으로 통합</td></tr>
+            <tr><td>특정 소스 응답이 0</td><td>해당 소스를 빼고 남은 가중치로 자동 재배분(별도 조치 불필요)</td></tr>
+            <tr><td>응답률 저조</td><td>마감 3일 전 1회 리마인드, 그래도 미달이면 마감 연장 또는 미집계</td></tr>
+            <tr><td>한 평가자가 전 항목 동일 점수</td><td>후광 플래그 표시 → 코멘트 확인, 무성의 응답이면 검토 후 제외</td></tr>
+            <tr><td>전체 평균이 4.3 이상</td><td>관대화 가능성 → 다음 회차 척도·교육 보강</td></tr>
+            <tr><td>극단 점수에 코멘트 없음</td><td>보완 요청, 미보완 시 해당 점수 제외</td></tr>
+            <tr><td>전년 대비 미세 변화</td><td>편차 범위 내이면 ‘유의미한 변화 아님’으로 표기</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <!-- 8 -->
+      <section id="s8">
+        <h2><span class="no">8</span>커뮤니케이션 템플릿</h2>
+        <p class="lead">그대로 복사해 쓰는 안내 문구입니다. 대괄호 부분만 바꿔 사용하세요.</p>
+
+        <div class="tpl">
+          <div class="th"><b>① 사전 공지 (전 직원)</b><button class="cp" data-cp="t1">복사</button></div>
+          <div class="bd" id="t1">[기관명] 구성원 여러분께
+
+올해 다면평가(360° 성장 피드백)를 [기간]에 실시합니다. 이 평가는 서로의 성장을 돕기 위한 것으로, 서열화나 인사상 불이익에 사용되지 않습니다.
+
+· 방식: 동료·타직종·관리자 등 여러 관점의 5점 평가
+· 원칙: 개별 응답은 비공개, 집계 결과만 제공
+· 일정: 평가 기간 [D-4주~D-2주], 결과 면담 [D+2주]
+
+자세한 기준과 입력 방법은 안내 자료를 참고해 주세요. 솔직하고 신중한 참여 부탁드립니다.</div>
+        </div>
+
+        <div class="tpl">
+          <div class="th"><b>② 평가자 안내</b><button class="cp" data-cp="t2">복사</button></div>
+          <div class="bd" id="t2">[평가자]님께
+
+[대상자]님에 대한 다면평가를 요청드립니다. 아래 링크에서 [마감일]까지 입력해 주세요.
+입력 링크: [링크] / 평가자 번호: [번호]
+
+작성 시 유의사항
+· 관찰한 사실을 바탕으로 평가해 주세요.
+· 잘 모르는 항목은 ‘관찰 기회 없음’을 선택해 주세요(추측 금지).
+· 5점 또는 1·2점을 줄 때는 구체적 사례를 코멘트로 남겨 주세요.
+· ‘3점’은 기대를 충족하는 정상 점수입니다.
+
+응답은 비공개로 처리되며 집계 결과만 사용됩니다.</div>
+        </div>
+
+        <div class="tpl">
+          <div class="th"><b>③ 마감 리마인드</b><button class="cp" data-cp="t3">복사</button></div>
+          <div class="bd" id="t3">[평가자]님, 다면평가 입력 마감이 [D-3일] 남았습니다.
+아직 제출 전이시면 [마감일]까지 부탁드립니다. 입력에는 약 5분이면 충분합니다.
+링크: [링크]</div>
+        </div>
+
+        <div class="tpl">
+          <div class="th"><b>④ 결과 면담 안내</b><button class="cp" data-cp="t4">복사</button></div>
+          <div class="bd" id="t4">[대상자]님, 다면평가 결과 면담을 [일시]에 진행합니다.
+이번 면담은 점수 통보가 아니라, 강점을 확인하고 다음 성장 목표(IDP)를 함께 정하는 자리입니다.
+결과지를 미리 살펴보시고, 올해 더 키우고 싶은 부분을 한 가지 생각해 와 주세요.</div>
+        </div>
+      </section>
+
+      <!-- A -->
+      <section id="a1">
+        <h2><span class="no">A</span>단계별 체크리스트</h2>
+        <p class="lead">인쇄해서 진행 상황을 체크하세요.</p>
+
+        <ul class="chk">
+          <li class="ct">설계·배정 (D-8 ~ D-6주)</li>
+          <li><span class="bx"></span><span>대상자 명단·직군 확정</span></li>
+          <li><span class="bx"></span><span>직군 모듈 2개 선택</span></li>
+          <li><span class="bx"></span><span>가중·임계값 점검</span></li>
+          <li><span class="bx"></span><span>사전 공지 발송</span></li>
+          <li><span class="bx"></span><span>소스별 평가자 배정(동료5·타직종3·관리자3)</span></li>
+          <li><span class="bx"></span><span>익명성 확인(미달 시 통합/기명 전환)</span></li>
+          <li><span class="bx"></span><span>평가자 교육 실시</span></li>
+        </ul>
+
+        <ul class="chk">
+          <li class="ct">실시·집계 (D-4주 ~ D-day)</li>
+          <li><span class="bx"></span><span>웹 양식 링크·번호 배포</span></li>
+          <li><span class="bx"></span><span>응답 취합(시트 붙여넣기)</span></li>
+          <li><span class="bx"></span><span>마감 3일 전 리마인드</span></li>
+          <li><span class="bx"></span><span>충분성 점검(소스별 인원 충족)</span></li>
+          <li><span class="bx"></span><span>편향 점검(관대화·후광 플래그)</span></li>
+          <li><span class="bx"></span><span>자기평가 입력·인식차 확인</span></li>
+          <li><span class="bx"></span><span>리포트 정리(강점2·개발영역1)</span></li>
+        </ul>
+
+        <ul class="chk">
+          <li class="ct">면담·후속 (D+2주 ~ +6개월)</li>
+          <li><span class="bx"></span><span>결과 면담 진행</span></li>
+          <li><span class="bx"></span><span>IDP 수립</span></li>
+          <li><span class="bx"></span><span>결과 보관·보존기간 관리</span></li>
+          <li><span class="bx"></span><span>6개월 후 IDP 이행 점검</span></li>
+        </ul>
+      </section>
+
+      <div class="foot">다면평가 실무 운영 매뉴얼 · 가중치·최소 인원·임계값은 기관 상황에 맞게 조정해 사용합니다. 본 평가는 성장 지원용이며 인사 결정 연동 시 별도 규정·노무 검토가 필요합니다.</div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast">복사되었습니다</div>
+
+<script>
+const links=[...document.querySelectorAll(".toc a")];
+const map={};links.forEach(a=>map[a.getAttribute("href").slice(1)]=a);
+const spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove("active"));if(map[e.target.id])map[e.target.id].classList.add("active");}})},{rootMargin:"-8% 0px -78% 0px"});
+document.querySelectorAll("section").forEach(s=>spy.observe(s));
+const toc=document.getElementById("toc"),scrim=document.getElementById("scrim");
+document.getElementById("menuBtn").onclick=()=>{toc.classList.add("open");scrim.classList.add("show")};
+scrim.onclick=()=>{toc.classList.remove("open");scrim.classList.remove("show")};
+links.forEach(a=>a.addEventListener("click",()=>{toc.classList.remove("open");scrim.classList.remove("show")}));
+function toast(){const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600);}
+document.querySelectorAll(".cp").forEach(b=>{
+  b.onclick=async()=>{
+    const txt=document.getElementById(b.dataset.cp).innerText;
+    try{await navigator.clipboard.writeText(txt);}
+    catch{const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
+    toast();
+  };
+});
+</script>
+</body>
+</html>
