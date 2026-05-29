@@ -1,0 +1,14 @@
+{
+  "name": "operations-manual-360",
+  "version": "1.0.0",
+  "description": "병원 다면평가 실무 운영 웹 시스템",
+  "main": "index.html",
+  "scripts": {
+    "dev": "http-server ./ -p 3000 -o",
+    "start": "http-server ./ -p 3000 -o"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
