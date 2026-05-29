@@ -62,11 +62,12 @@
       font-size: 15px;
     }
 
-    /* 전체 앱 배치 */
+    /* 전체 앱 배치 (유체 반응형 레이아웃) */
     .app-container {
       display: grid;
       grid-template-columns: var(--nav) 1fr;
       min-height: 100vh;
+      transition: grid-template-columns 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* 사이드바 스타일 */
@@ -80,7 +81,8 @@
       top: 0;
       height: 100vh;
       z-index: 10;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
     }
 
     .brand-area {
@@ -113,6 +115,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      transition: all 0.2s;
     }
 
     .profile-role-name {
@@ -199,6 +202,7 @@
       max-width: var(--maxw);
       margin: 0 auto;
       width: 100%;
+      transition: padding 0.3s ease;
     }
 
     /* 모바일 탑바 */
@@ -402,6 +406,8 @@
 
     @media (max-width: 768px) {
       .landing-features { grid-template-columns: 1fr; }
+      .landing-title { font-size: 32px; }
+      .landing-hero { padding: 30px 10px; }
     }
 
     .feature-card {
@@ -539,13 +545,21 @@
     }
 
     /* ========================================================
-       기존 기능 레이아웃/스타일 유지
+       대시보드 동적 그리드 및 모바일 카드 뷰 스타일 (동적 구조)
        ======================================================== */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-bottom: 24px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .stats-grid { grid-template-columns: 1fr; }
     }
 
     .stat-card {
@@ -598,6 +612,7 @@
       margin-top: 4px;
     }
 
+    /* 반응형 테이블 & 모바일 요약 카드 동적 구조 */
     .table-container {
       overflow-x: auto;
       border: 1px solid var(--line);
@@ -629,6 +644,43 @@
 
     table.data-table tbody tr:hover {
       background: #fafcfc;
+    }
+
+    /* 모바일 전용 요약 카드 레이아웃 */
+    .mobile-dashboard-grid {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .mobile-data-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s;
+    }
+
+    .mobile-data-card:hover {
+      border-color: var(--line-d);
+    }
+
+    .mobile-card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13.5px;
+    }
+
+    /* 기기 크기에 따른 테이블 / 모바일 카드뷰 실시간 토글 (핵심 동적 구조) */
+    @media (max-width: 768px) {
+      .table-container.desktop-only-table { display: none; }
+      .mobile-dashboard-grid { display: flex; }
     }
 
     .badge {
@@ -724,15 +776,17 @@
       margin-bottom: 16px;
     }
 
+    /* 5점 척도 선택 버튼 그리드 (모바일 동적 재정렬) */
     .scale-selector {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 6px;
       margin-bottom: 14px;
+      transition: all 0.2s;
     }
 
     @media (max-width: 600px) {
-      .scale-selector { grid-template-columns: repeat(3, 1fr); }
+      .scale-selector { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     }
 
     .scale-btn {
@@ -844,14 +898,16 @@
     .btn.btn-secondary:hover { background: var(--teal-l2); border-color: var(--teal); color: var(--teal-d); }
     .btn.btn-danger { background: var(--danger); color: #fff; }
 
+    /* 리포트 가로/세로 동적 분기 구조 */
     .report-grid {
       display: grid;
       grid-template-columns: 1.2fr 1fr;
       gap: 24px;
       margin-bottom: 24px;
+      transition: all 0.3s;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       .report-grid { grid-template-columns: 1fr; }
     }
 
@@ -864,6 +920,7 @@
       align-items: center;
       justify-content: center;
       min-height: 320px;
+      width: 100%;
     }
 
     .report-summary-list {
@@ -1052,6 +1109,7 @@
 
     .toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* 해상도별 미니멀리스트 및 모바일 사이드바 트랜지션 (반응형 동적 레이아웃) */
     @media (max-width: 920px) {
       .app-container { grid-template-columns: 1fr; }
       aside.sidebar {
@@ -1061,7 +1119,7 @@
         bottom: 0;
         width: 270px;
         transform: translateX(-100%);
-        transition: transform 0.25s ease-out;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 30;
       }
       aside.sidebar.open { transform: translateX(0); }
@@ -1096,14 +1154,14 @@
       </div>
       
       <nav class="menu-list" id="sidebarMenuList">
-        <!-- JS에 의해 로그인한 유저의 역할에 맞는 메뉴 셋이 동적 렌더링됩니다 -->
+        <!-- JS에 의해 동적 렌더링 -->
       </nav>
 
       <button class="btn logout-btn" onclick="handleLogout()">🚪 로그아웃</button>
 
       <div class="sidebar-footer">
         <div>성장 지원용 (개발 트랙)</div>
-        <div style="font-size: 10px; margin-top: 4px; opacity: 0.7;">v1.2 (로그인 및 개인화 완료)</div>
+        <div style="font-size: 10px; margin-top: 4px; opacity: 0.7;">v1.3 (반응형 동적 구조 완료)</div>
       </div>
     </aside>
 
@@ -1230,9 +1288,12 @@
           </div>
         </div>
 
+        <!-- 데스크톱용 테이블 & 모바일용 카드 리스트 동적 렌더링 영역 (동적 반응형 구조) -->
         <div class="card">
           <div class="card-title">👥 대상자별 평가 현황 및 집계 결과</div>
-          <div class="table-container">
+          
+          <!-- 데스크톱 전용 테이블 (폭 768px 이상 활성) -->
+          <div class="table-container desktop-only-table">
             <table class="data-table" id="dashboard-table">
               <thead>
                 <tr>
@@ -1250,8 +1311,13 @@
               </tbody>
             </table>
           </div>
+
+          <!-- 모바일/태블릿용 동적 카드뷰 그리드 (폭 768px 미만 자동 활성) -->
+          <div class="mobile-dashboard-grid" id="dashboard-mobile-view">
+            <!-- JS dynamic -->
+          </div>
           
-          <div style="background: var(--teal-l2); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--teal-d);">
+          <div style="background: var(--teal-l2); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--teal-d); margin-top: 10px;">
             <strong>💡 품질 가이드라인:</strong>
             <ul style="margin-left: 18px; margin-top: 4px; list-style-type: circle;">
               <li><strong>충분성 충족 조건:</strong> 동료(peer) ≥ 5명, 타직종(dept) ≥ 3명, 관리자(lead) ≥ 3명</li>
@@ -1366,7 +1432,7 @@
             </div>
           </div>
 
-          <!-- 세부 평점 테이블 -->
+          <!-- 세부 평점 테이블 (가로 스크롤 컨테이너로 감싸 모바일 깨짐 방지) -->
           <div class="card">
             <div class="card-title">📝 항목별/소스별 평균 점수 상세</div>
             <div class="table-container">
@@ -1397,7 +1463,7 @@
             </div>
           </div>
 
-          <!-- IDP 수립 (권한에 따라 활성/비활성) -->
+          <!-- IDP 수립 -->
           <div class="card" style="border-top: 4px solid var(--teal);" id="idp-form-card">
             <div class="card-title">🌱 피드백 면담 기록 및 IDP(개인개발계획) 수립</div>
             <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">
@@ -1815,7 +1881,7 @@
     let AppState = {
       records: [],
       idp: {},
-      currentUser: null // 로그인 정보 보관
+      currentUser: null
     };
 
     window.onload = function() {
@@ -1824,12 +1890,18 @@
       handleTargetChange();
       initManualScrollSpy();
       
-      // 세션 확인 후 화면 상태 복구
       restoreUserSession();
+
+      // 브라우저 윈도우 창 크기 변경 감지 리스너 (반응형 동적 렌더러 연동)
+      window.addEventListener('resize', function() {
+        if (AppState.currentUser && document.getElementById("view-dashboard").classList.contains("active")) {
+          renderDashboard();
+        }
+      });
     };
 
     function initData() {
-      const stored = localStorage.getItem("antigravity_operations_360_v2");
+      const stored = localStorage.getItem("antigravity_operations_360_v3");
       if (stored) {
         AppState = JSON.parse(stored);
       } else {
@@ -1843,11 +1915,11 @@
     }
 
     function saveData() {
-      localStorage.setItem("antigravity_operations_360_v2", JSON.stringify(AppState));
+      localStorage.setItem("antigravity_operations_360_v3", JSON.stringify(AppState));
     }
 
     // ==========================================
-    // 로그인 및 세션 제어 비즈니스 로직
+    // 로그인 및 세션 제어
     // ==========================================
     function handleLoginSubmit(event) {
       event.preventDefault();
@@ -1884,14 +1956,12 @@
       saveData();
       showToast("🚪 로그아웃되었습니다.");
       
-      // 화면 초기화 및 비로그인 랜딩 복구
       document.getElementById("appSidebar").style.display = "none";
       document.getElementById("appWelcomeBanner").style.display = "none";
       
       switchView("landing");
     }
 
-    // 세션 복구 및 개인화 환경 구성
     function restoreUserSession() {
       const user = AppState.currentUser;
       if (!user) {
@@ -1899,7 +1969,6 @@
         return;
       }
 
-      // 1. 사이드바 활성화 및 프로필 동적 바인딩
       document.getElementById("appSidebar").style.display = "flex";
       
       const pRole = document.getElementById("p-role-name");
@@ -1910,10 +1979,8 @@
       pName.innerText = user.name + " 님";
       pLevel.innerText = user.level === 'admin' ? '최고 관리자' : (user.level === 'manager' ? '부서장' : '부서원');
 
-      // 2. 동적 메뉴 렌더링 (권한 설계 규칙 6번 반영)
       renderSidebarMenu(user.level);
 
-      // 3. 환영 배너 바인딩 및 데이터 요약 개인화
       const banner = document.getElementById("appWelcomeBanner");
       banner.style.display = "block";
 
@@ -1924,10 +1991,8 @@
       welcomeRole.innerText = `${user.roleName} / 권한: ${pLevel.innerText}`;
       welcomeText.innerText = `안녕하세요, ${user.name}님! 오늘도 따뜻하고 보람찬 하루를 응원합니다.`;
 
-      // 개인화된 업무 요약 출력
       let statusHtml = "";
       if (user.level === 'admin') {
-        const flagCount = AppState.records.length > 0 ? 1 : 0; // 예시
         statusHtml = `
           <span class="welcome-badge">📋 총 수집 평가: ${AppState.records.length}건</span>
           <span class="welcome-badge" style="background: var(--warn-bg); color: var(--warn);">🚨 점검 필요 대상: 2명</span>
@@ -1947,24 +2012,19 @@
       }
       welcomeStatus.innerHTML = statusHtml;
 
-      // 4. 리포트 탭 개인화 통제 구성
       const reportFilterCard = document.getElementById("report-target-filter-card");
-      const idpFormCard = document.getElementById("idp-form-card");
       const idpSubmitBar = document.getElementById("idp-submit-bar");
 
       if (user.level === 'employee') {
-        // 일반 직원은 타인 리포트 조회를 막고 본인 필터링 강제 격리
         reportFilterCard.style.display = "none";
         document.getElementById("report-main-title").innerText = "🎯 나의 다면평가 성장 리포트";
         
-        // IDP 입력은 부서장 전용이므로 직원은 읽기 전용 처리하거나 숨김
         idpSubmitBar.style.display = "none";
         document.getElementById("idp-strength").disabled = true;
         document.getElementById("idp-development").disabled = true;
         document.getElementById("idp-action-plan").disabled = true;
         document.getElementById("idp-meeting-note").disabled = true;
       } else {
-        // 부서장 및 인사는 검색 필터 활성화
         reportFilterCard.style.display = "block";
         document.getElementById("report-main-title").innerText = "다면평가 결과 리포트 및 IDP 수립";
         
@@ -1975,40 +2035,34 @@
         document.getElementById("idp-meeting-note").disabled = false;
       }
 
-      // 첫 진입 시 권한에 따라 기본 탭 전환
       if (user.level === 'employee') {
-        switchView("evaluation"); // 직원은 평가하기로 바로 이동 권장
+        switchView("evaluation");
       } else {
-        switchView("dashboard"); // 인사/부서장은 통계 대시보드로 이동
+        switchView("dashboard");
       }
     }
 
-    // 권한 수준별 사이드바 메뉴 동적 구성
     function renderSidebarMenu(level) {
       const menuContainer = document.getElementById("sidebarMenuList");
       menuContainer.innerHTML = "";
 
-      // 🏠 홈(랜딩) 메뉴는 상시 배치
       const homeBtn = document.createElement("button");
       homeBtn.innerHTML = "🏠 랜딩 홈";
       homeBtn.onclick = () => switchView("landing");
       menuContainer.appendChild(homeBtn);
 
       if (level === 'admin') {
-        // 인사담당자 전체 허용
         menuContainer.appendChild(createMenuBtn("📊 운영 대시보드", "dashboard"));
         menuContainer.appendChild(createMenuBtn("✏️ 다면평가 입력", "evaluation"));
         menuContainer.appendChild(createMenuBtn("📋 리포트 & IDP", "report"));
         menuContainer.appendChild(createMenuBtn("📖 실무 매뉴얼", "manual"));
         menuContainer.appendChild(createMenuBtn("⚙️ 데이터 관리", "data-manager"));
       } else if (level === 'manager') {
-        // 부서장은 데이터 관리만 배제
         menuContainer.appendChild(createMenuBtn("📊 부서 대시보드", "dashboard"));
         menuContainer.appendChild(createMenuBtn("✏️ 다면평가 입력", "evaluation"));
         menuContainer.appendChild(createMenuBtn("📋 부서원 리포트 & IDP", "report"));
         menuContainer.appendChild(createMenuBtn("📖 실무 매뉴얼", "manual"));
       } else {
-        // 일반 직원은 평가 입력, 본인 리포트, 매뉴얼만 허용
         menuContainer.appendChild(createMenuBtn("✏️ 다면평가 입력", "evaluation"));
         menuContainer.appendChild(createMenuBtn("📋 나의 성장 리포트", "report"));
         menuContainer.appendChild(createMenuBtn("📖 실무 매뉴얼", "manual"));
@@ -2023,10 +2077,9 @@
     }
 
     // ==========================================
-    // 뷰 SPA 제어 및 라우팅 로직
+    // SPA 라우팅 및 뷰 전환
     // ==========================================
     function switchView(viewName) {
-      // 모바일 제목 동적 변경
       const titles = {
         landing: "360° 성장 피드백 시스템",
         login: "다면평가 로그인",
@@ -2047,7 +2100,6 @@
         targetSection.classList.add("active");
       }
 
-      // 사이드바가 노출되어 있을 때 메뉴 버튼 액티브 연동
       const sidebar = document.getElementById("appSidebar");
       if (sidebar.style.display !== 'none') {
         document.querySelectorAll(".menu-list button").forEach(btn => btn.classList.remove("active"));
@@ -2059,11 +2111,9 @@
         });
       }
 
-      // 모바일 서랍 닫기
       document.getElementById("appSidebar").classList.remove("open");
       document.getElementById("appScrim").style.display = "none";
 
-      // 탭 로드 이벤트
       if (viewName === 'dashboard') {
         renderDashboard();
       } else if (viewName === 'report') {
@@ -2073,7 +2123,7 @@
     }
 
     // ==========================================
-    // 기존 다면평가 입력/동적 폼 기능 완벽 보존
+    // 다면평가 입력 로직
     // ==========================================
     function renderTargetDropdowns() {
       const evalTarget = document.getElementById("eval-target");
@@ -2251,7 +2301,6 @@
       showToast("💾 평가가 실시간으로 안전하게 제출되었습니다!");
       resetForm();
       
-      // 로그인이 되어 있다면 적합한 뷰로 전환
       if (AppState.currentUser.level === 'employee') {
         switchView("report");
       } else {
@@ -2265,20 +2314,22 @@
     }
 
     // ==========================================
-    // 대시보드 및 리포트 집계 알고리즘 완벽 작동
+    // 대시보드 집계 및 실시간 반응형 동적 렌더링 (핵심 동적 구조)
     // ==========================================
     function renderDashboard() {
       document.getElementById("stat-total-count").innerHTML = `${AppState.records.length}<small> 건</small>`;
 
       const tbody = document.querySelector("#dashboard-table tbody");
+      const mobileGrid = document.getElementById("dashboard-mobile-view");
+      
       tbody.innerHTML = "";
+      mobileGrid.innerHTML = "";
 
       let globalFlagCount = 0;
       const user = AppState.currentUser;
+      const isMobileViewport = window.innerWidth < 768; // 768px 미만 장벽 체크
 
       targetStaff.forEach(staff => {
-        // 부서장은 부서원 정보만 볼 수 있게 제한 (본인 정보는 대시보드 조회에서 배제하거나 분기 가능)
-        // 여기서는 부서장(manager) 이지민 팀장이 접속 시 본인을 제외한 부서원 현황만 보도록 매끄럽게 통제
         if (user.level === 'manager' && staff.name === user.name) {
           return; 
         }
@@ -2384,31 +2435,65 @@
           flags.push(`<span class="flag-item none">이상 없음</span>`);
         }
 
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><strong>${staff.name}</strong><br><small style="color: var(--muted);">${staff.desc}</small></td>
-          <td><span class="badge info">${staff.roleName.split(" ")[0]}</span></td>
-          <td style="text-align: center;">
-            <span style="font-family: monospace; font-weight: 700;">
-              ${counts.peer} / ${counts.dept} / ${counts.lead} / ${counts.patient}
-            </span>
-          </td>
-          <td>${suffBadge}</td>
-          <td style="text-align: right; font-weight: 800; color: var(--teal-d); font-size: 16px;">
-            ${finalTargetWeightedAvg > 0 ? finalTargetWeightedAvg.toFixed(2) : '-'}
-          </td>
-          <td><div class="flag-group">${flags.join("")}</div></td>
-          <td style="text-align: center;">
-            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="openReportModal('${staff.name}')">🔍 리포트 조회</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+        // 2-A. 데스크톱 뷰 테이블 렌더링
+        if (!isMobileViewport) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><strong>${staff.name}</strong><br><small style="color: var(--muted);">${staff.desc}</small></td>
+            <td><span class="badge info">${staff.roleName.split(" ")[0]}</span></td>
+            <td style="text-align: center;">
+              <span style="font-family: monospace; font-weight: 700;">
+                ${counts.peer} / ${counts.dept} / ${counts.lead} / ${counts.patient}
+              </span>
+            </td>
+            <td>${suffBadge}</td>
+            <td style="text-align: right; font-weight: 800; color: var(--teal-d); font-size: 16px;">
+              ${finalTargetWeightedAvg > 0 ? finalTargetWeightedAvg.toFixed(2) : '-'}
+            </td>
+            <td><div class="flag-group">${flags.join("")}</div></td>
+            <td style="text-align: center;">
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="openReportModal('${staff.name}')">🔍 리포트 조회</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        } 
+        // 2-B. 모바일 뷰 카드 렌더링 (유체 동적 레이아웃 변형)
+        else {
+          const cardDiv = document.createElement("div");
+          cardDiv.className = "mobile-data-card";
+          cardDiv.innerHTML = `
+            <div class="mobile-card-row" style="border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 6px;">
+              <strong>${staff.name} <small style="color: var(--muted); font-weight: normal;">(${staff.desc})</small></strong>
+              <span class="badge info">${staff.roleName.split(" ")[0]}</span>
+            </div>
+            <div class="mobile-card-row">
+              <span style="color: var(--muted);">제출(동/타/관/환)</span>
+              <span style="font-family: monospace; font-weight: 700;">${counts.peer} / ${counts.dept} / ${counts.lead} / ${counts.patient}</span>
+            </div>
+            <div class="mobile-card-row">
+              <span style="color: var(--muted);">평가자 충분성</span>
+              <span>${suffBadge}</span>
+            </div>
+            <div class="mobile-card-row">
+              <span style="color: var(--muted);">품질/편향 진단</span>
+              <div class="flag-group">${flags.join("")}</div>
+            </div>
+            <div class="mobile-card-row" style="background: var(--teal-l2); padding: 8px 12px; border-radius: 8px; margin-top: 4px;">
+              <strong style="color: var(--teal-d);">종합 가중평균</strong>
+              <strong style="color: var(--teal-d); font-size: 16px;">${finalTargetWeightedAvg > 0 ? finalTargetWeightedAvg.toFixed(2) : '-'}점</strong>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; padding: 10px; font-size: 13px; border-radius: 8px; margin-top: 6px;" onclick="openReportModal('${staff.name}')">🔍 성장 리포트 & IDP 조회</button>
+          `;
+          mobileGrid.appendChild(cardDiv);
+        }
       });
 
       document.getElementById("stat-flag-count").innerText = globalFlagCount + " 건";
     }
 
-    // 리포트 대상자 목록 (권한 통제 개인화)
+    // ==========================================
+    // 리포트 상세 분석 및 Chart.js
+    // ==========================================
     function renderReportDropdown() {
       const select = document.getElementById("report-target-select");
       select.innerHTML = "";
@@ -2416,7 +2501,6 @@
       const user = AppState.currentUser;
       
       targetStaff.forEach(staff => {
-        // 부서장은 부서원 리포트만 보이고 (본인 포함), 일반 직원은 해당 드롭다운 자체가 사이드바 통제에 의해 가려집니다.
         const opt = document.createElement("option");
         opt.value = staff.name;
         opt.innerText = `${staff.name} (${staff.roleName})`;
@@ -2429,7 +2513,6 @@
       let targetName = "";
       
       if (user.level === 'employee') {
-        // 일반 직원은 타인 데이터 조회가 불가능하도록 본인 이름 강제 락
         targetName = user.name;
       } else {
         targetName = document.getElementById("report-target-select").value;
@@ -2511,7 +2594,6 @@
         finalAverages[qId] = weightTotal > 0 ? (weightedSum / weightTotal) : null;
       });
 
-      // 테이블 렌더링
       const tbody = document.querySelector("#report-detail-table tbody");
       tbody.innerHTML = "";
 
@@ -2537,7 +2619,6 @@
         tbody.appendChild(tr);
       });
 
-      // 강점약점 자동 추출
       const sortedByScore = Object.keys(finalAverages)
         .filter(qId => finalAverages[qId] !== null)
         .map(qId => ({ qId: qId, score: finalAverages[qId] }))
@@ -2551,7 +2632,6 @@
         document.getElementById("summary-weakness").innerText = `${questionsDict[lowest.qId].title.split(" ")[1]} (${lowest.score.toFixed(2)}점)`;
       }
 
-      // 익명 코멘트 모음
       const commContainer = document.getElementById("report-comments-container");
       commContainer.innerHTML = "";
 
@@ -2577,7 +2657,6 @@
         commContainer.innerHTML = `<div style="text-align: center; color: var(--muted); font-size: 13.5px; padding: 20px;">제출된 서술형 피드백 코멘트가 없습니다.</div>`;
       }
 
-      // Chart.js 레이더 차트 그리기
       const labels = validQIds.map(qId => questionsDict[qId].title.split(" ")[1]);
       const selfData = validQIds.map(qId => avgBySource.self[qId] || 0);
       const otherData = validQIds.map(qId => finalAverages[qId] || 0);
@@ -2627,7 +2706,6 @@
         }
       });
 
-      // IDP 로드
       const idpRecord = AppState.idp[targetName];
       if (idpRecord) {
         document.getElementById("idp-strength").value = idpRecord.strength1 || "";
@@ -2664,7 +2742,7 @@
     }
 
     // ==========================================
-    // 데이터 및 백업 유틸리티
+    // 데이터 및 백업
     // ==========================================
     function loadMockData() {
       if (confirm("🚨 기존 데이터를 모두 지우고 모의 데모 데이터 15건으로 채우겠습니까?")) {
